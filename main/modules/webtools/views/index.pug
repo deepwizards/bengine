@@ -3,3 +3,46 @@ extends ../../../common/_layout
 block content
     .container
         h1 WEBTOOLS TESTER
+        form#testForm(method="post")
+            .form-group
+                label(for="type") Request Type
+                select#type.form-control(name="type")
+                    option(value="search") Search
+                    option(value="scraper") Scraper
+                    option(value="scraperV2") Scraper V2
+                    option(value="sitemap") Sitemap
+            .form-group
+                label(for="url") URL
+                input#url.form-control(type="url" name="url" placeholder="Enter URL" required)
+            .form-group
+                label(for="query") Query
+                input#query.form-control(type="text" name="query" placeholder="Enter Query")
+            button.btn.btn-primary(type="submit") Submit
+        .response
+            h2 Response
+            pre#response
+
+    script.
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('testForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const type = document.getElementById('type').value;
+                const url = document.getElementById('url').value;
+                const query = document.getElementById('query').value;
+                fetch('/invokeRequest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ type, url, query }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('response').textContent = `Error: ${error}`;
+                });
+            });
+        });
