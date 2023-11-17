@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const VersionSchema = new mongoose.Schema({
+const Schema = mongoose.Schema;
+const VersionSchema = new Schema({
     blocks: [{
         block: {
             type: Schema.Types.ObjectId,
@@ -13,7 +14,7 @@ const VersionSchema = new mongoose.Schema({
     }
 });
 
-const Template = new mongoose.Schema({
+const Template = new Schema({
     name: String,
     description: String,
     notes: String,

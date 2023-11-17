@@ -23,20 +23,20 @@ const Job = new mongoose.Schema({
     notes: String
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
-JobSchema.pre('save', function(next) {
+Job.pre('save', function(next) {
     if (!this.outputs) {
         this.outputs = [];
     }
     next();
 });
 
-JobSchema.methods.markComplete = function(output_id) {
+Job.methods.markComplete = function(output_id) {
     this.status = 'complete';
     this.outputs.push(output_id);
     return this.save();
 }
 
-JobSchema.methods.addOutput = function(output_id) {
+Job.methods.addOutput = function(output_id) {
     if (!this.outputs) {
         this.outputs = [];
     }
@@ -44,7 +44,7 @@ JobSchema.methods.addOutput = function(output_id) {
     return this.save();
 }
 
-JobSchema.methods.toJSON = function() {
+Job.methods.toJSON = function() {
     const job = this.toObject();
     return job;
 }

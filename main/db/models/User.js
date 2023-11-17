@@ -10,14 +10,14 @@ const User = new Schema({
 	bio: { type: String },
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
-UserSchema.pre('save', async function (next) {
+User.pre('save', async function (next) {
 	if (this.isModified('password')) {
 		this.password = await bcrypt.hash(this.password, 10);
 	}
 	next();
 });
 
-UserSchema.methods.comparePassword = function (password) {
+User.methods.comparePassword = function (password) {
 	return bcrypt.compare(password, this.password);
 };
 

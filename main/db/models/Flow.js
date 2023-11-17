@@ -1,20 +1,22 @@
-const mongoose = require('mongoose');
-const Job = require('./Job'); 
-const Flow = new mongoose.Schema({
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
+const Job = require('./Job');
+
+const Flow = new Schema({
     name: String,
     description: String,
     status: String,
-    project_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
-    data: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Data' }],
-    jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
-    dependencies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }],
-    outputs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Output' }],
+    project_id: { type: Schema.Types.ObjectId, ref: 'Project' },
+    data: [{ type: Schema.Types.ObjectId, ref: 'Data' }],
+    jobs: [{ type: Schema.Types.ObjectId, ref: 'Job' }],
+    dependencies: [{ type: Schema.Types.ObjectId, ref: 'Flow' }],
+    outputs: [{ type: Schema.Types.ObjectId, ref: 'Output' }],
     loop: { type: Boolean, default: false },
     loops: { type: Number, default: 0 },
     loop_counter: { type: Number, default: 0 },
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
-FlowSchema.methods.replaceData = async function(oldId, newId) {
+Flow.methods.replaceData = async function(oldId, newId) {
     try {
         const jobs = await Job.find({ _id: { $in: this.jobs } });
         const promises = jobs.map(job => {
@@ -29,7 +31,7 @@ FlowSchema.methods.replaceData = async function(oldId, newId) {
     }
 };
 
-FlowSchema.methods.replaceDependencies = async function(oldId, newId) {
+Flow.methods.replaceDependencies = async function(oldId, newId) {
     try {
         const jobs = await Job.find({ _id: { $in: this.jobs } });
         const promises = jobs.map(job => {
@@ -44,7 +46,7 @@ FlowSchema.methods.replaceDependencies = async function(oldId, newId) {
     }
 };
 
-FlowSchema.methods.duplicateFlow = async function() {
+Flow.methods.duplicateFlow = async function() {
     try {
         const flowData = this.toObject();
         delete flowData._id;

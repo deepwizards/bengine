@@ -8,7 +8,7 @@ const Project = new mongoose.Schema({
     outputs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Output' }]
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
-ProjectSchema.methods.replaceData = async function(oldId, newId) {
+Project.methods.replaceData = async function(oldId, newId) {
     try {
         const flows = await Flow.find({ _id: { $in: this.flows } });
         const promises = flows.map(flow => {
@@ -23,7 +23,7 @@ ProjectSchema.methods.replaceData = async function(oldId, newId) {
     }
 };
 
-ProjectSchema.methods.replaceDependencies = async function(oldId, newId) {
+Project.methods.replaceDependencies = async function(oldId, newId) {
     try {
         const flows = await Flow.find({ _id: { $in: this.flows } });
         const promises = flows.map(flow => {
@@ -38,7 +38,7 @@ ProjectSchema.methods.replaceDependencies = async function(oldId, newId) {
     }
 };
 
-ProjectSchema.methods.duplicateProject = async function() {
+Project.methods.duplicateProject = async function() {
     try {
         const projectData = this.toObject();
         delete projectData._id;
