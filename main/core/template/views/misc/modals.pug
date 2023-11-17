@@ -1,0 +1,116 @@
+.modal.fade#templateInfoModal(tabindex='-1', role='dialog')
+    .modal-dialog(role='document')
+        .modal-content.modal-dark
+            .modal-header
+                h5.modal-title Template Info
+                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') &times;
+            .modal-body
+                .row
+                    .col-md-6
+                        form#updateTemplateForm(action=`/template/update/${template._id}` method="POST" class="form-inline")
+                            b.mr-3 Template: #{template.name}
+                            .form-group.mr-2
+                                label(for="name") Name:
+                                input#templateName.form-control.ml-2(type="text" name="name" value=template.name)
+
+                            .form-group.mr-2
+                                label(for="description") Description:
+                                input#templateDescription.form-control.ml-2(type="text" name="description" value=template.description)
+
+                            button#updateTemplateButton.btn.btn-primary(type="submit")
+                                i.fa.fa-save.mr-2
+                                | Update
+                    .col-md-6
+                        .card
+                            .card-header
+                                i.fa.fa-server.mr-2
+                                | Service Settings
+                            .card-body#serviceSettingsBody
+                                //- .form-group
+                                //-     label(for="serviceSelector") Select Service:
+                                //-     .d-flex.align-items-center.mb-2
+                                //-         select#serviceSelector.form-control.mr-2(name="serviceSelector")
+                                //-             each service in services
+                                //-                 option(value=service.id)= service.name
+                                //-         button#changeServiceButton.btn.btn-primary(type="button")
+                                //-             i.fa.fa-exchange-alt
+
+                                if template.service
+                                    hr
+                                    .form-group
+                                        label(for="serviceName") Service Name:
+                                        input#serviceName.form-control(type="text" name="serviceName" value=template.service.name readonly)
+                                    .form-group
+                                        label(for="serviceApi") Service API:
+                                        input#serviceApi.form-control(type="text" name="serviceApi" value=template.service.api readonly)
+                                    .form-group
+                                        label(for="servicePort") Service Port:
+                                        input#servicePort.form-control(type="number" name="servicePort" value=template.service.port readonly)
+                                    .form-group
+                                        label(for="serviceEndpoint") Service Endpoint:
+                                        input#serviceEndpoint.form-control(type="text" name="serviceEndpoint" value=template.service.endpoint readonly)
+
+#testDetailsModal.modal.fade(tabindex="-1" aria-labelledby="testDetailsModalLabel" aria-hidden="true")
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h5#testDetailsModalLabel.modal-title
+                    | Test Mode
+                button.btn-close(type="button" data-dismiss="modal" aria-label="Close")
+            .modal-body#modalBody
+                .card.mb-3
+                    .card-header
+                        i.fa.fa-exchange-alt.mr-2
+                        | Test Service
+                    .card-body#testServiceBody
+                        .row
+                            .col-md-6
+                                .form-group
+                                    h5 Request Data (JSON):
+                                    pre#requestData.code-editor-bg(style="max-height: 300px;")
+                                        | {
+                                        |     "messages": [{ "role": "system", "content": "#{preview}" }],
+                                        |     "model": "gpt-3.5-turbo"
+                                        | }
+
+                                a(href="#" id="testServiceButton" data-id=`${template._id}`).btn.btn-success.btn-large
+                                    i.fa.fa-play.mr-2
+                                    | Run Test
+
+                            .col-md-6
+                                h5 Response Data (JSON):
+                                pre#responseDataContainer.code-editor-bg(style="max-height: 300px;")
+
+                        .row.mt-3
+                            .col-md-12
+                                .card
+                                    .card-header
+                                        i.fa.fa-history.mr-2
+                                        | Test History
+                                    .card-body#testHistoryBody
+                                        ul.list-group#testHistoryList
+                                            each test in tests
+                                                li.list-group-item.test-history-item(data-toggle="modal" data-target="#testDetailsModal" data-id=test._id)
+                                                    | Test on #{test.created_at} | #{test.__v} | #{test.template_id}
+
+            .modal-footer
+                button.btn.btn-secondary(type="button" data-dismiss="modal")
+                    | Close
+
+//- Load Version Modal
+#loadVersionModal.modal.fade(tabindex='-1', role='dialog')
+    .modal-dialog(role='document')
+        .modal-content
+            .modal-header
+                h5.modal-title Select Version
+                button.close(data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') ×
+            .modal-body
+                ul.list-group#versionList
+                    each version in template.versions
+                        li.list-group-item
+                            a(href='#', data-version-id=version._id) Version: #{version.createdAt}
+            .modal-footer
+                button.btn.btn-secondary(data-dismiss='modal') Close
+                button.btn.btn-primary#selectVersionButton Select Version

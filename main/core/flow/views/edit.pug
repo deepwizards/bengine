@@ -1,0 +1,35 @@
+extends ../../../common/_layout
+
+block content
+    .container
+        .row
+            .col-md-3
+                .card.mt-4
+                    .card-header
+                        h4 Options
+                    .card-body
+                        a.btn.btn-primary.btn-block(href='/flow/new') Add New Flow
+                        a.btn.btn-primary.btn-block(href='/flow') View All Flows
+                        a.btn.btn-primary.btn-block(href='/flow/edit/' + item._id) Edit Flow
+                        form(action='/flow/delete/' + item._id, method='POST', style='display:inline')
+                            button.btn.btn-danger.btn-block(type='submit').mt-2
+                                i.fas.fa-trash-alt
+                                | &nbsp;Delete Flow
+
+            .col-md-9
+                .card.mt-4
+                    .card-header
+                        h4 Edit Flow
+                    .card-body
+                        form(action='/flow/update/' + item._id, method='POST')
+                            label(for='name') name
+                            input.form-control(type='text', id='name', name='name', value=item.name, required)
+                            label(for='description') description
+                            input.form-control(type='text', id='description', name='description', value=item.description, required)
+                            //- label(for='jobs') jobs
+                            //- select.form-control(name='jobs', id='jobs')
+                            //-     option(value='') Select jobs
+                            //-     for option in jobsOptions
+                            //-         option(value=option.id)= option.name
+                            button.btn.btn-primary(type='submit') Update
+                            //- a.btn.btn-warning(href='/flow') Cancel

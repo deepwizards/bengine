@@ -1,0 +1,38 @@
+# Logs
+logs
+*.log
+
+# Node.js specific files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build output
+dist/
+build/
+out/
+target/
+bin/
+coverage/
+lib-cov/
+*.seed
+*.tgz
+
+# Dependency directories
+typings/
+jspm_packages/
+typings/
+
+.env

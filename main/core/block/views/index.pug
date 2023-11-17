@@ -1,0 +1,65 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        .row.mt-4
+            .col-md-3 
+                .card
+                    .card-header.bg-primary
+                        h4.mb-0.fw Editor
+                    .card-body
+                        form#blockForm
+                            .form-group
+                                label Name
+                                input.form-control(type='text', name='name', id='editorName')
+                            .form-group
+                                label Body
+                                textarea.form-control(name='body', rows="15", id='editorBody')
+                            .form-group
+                                label Tags
+                                .input-group
+                                    input.form-control(type='text', name='tag', id='editorTag')
+                                    .input-group-append
+                                        button.btn.btn-primary.ml-2(id='addTag')
+                                            i.fa.fa-plus
+                            .badge-container#editorTags
+                    .card-footer
+                        button.btn.btn-danger.mt-3.ml-2.float-right(id='deleteBlock') Delete Block
+                        button.btn.btn-success.mt-3.float-right(id='saveChanges') Save Changes
+
+            .col-md-9
+                .card
+                    .card-header.bg-primary
+                        h4.mb-0.fw Block Library
+                            button.btn.btn-success.ml-2.float-right(id='newBlock')
+                                i.fa.fa-plus.mr-1
+                                | New Block
+                            button.btn.btn-secondary.ml-2.float-right(id='cloneBlock')
+                                i.fa.fa-clone.mr-1 
+                                | Clone Block
+                    .card-body
+                        table#dataTable.table.table-hover.mb-0
+                            thead
+                                tr
+                                    th Name
+                                    th Type
+                                    th Tags
+                            tbody(style="cursor: pointer;")
+                                if blocks
+                                    each block in blocks
+                                        tr(data-block-id=block._id, class="block-row", style="")
+                                            td= block.name
+                                            td= block.type
+                                            td
+                                                if block.tags
+                                                    each tag in block.tags
+                                                        span.badge.badge-primary.m-1 #{tag.toString()}
+
+            .col-md-12
+                .card
+                    .card-header.bg-primary
+                        h4.mb-0.fw Tags
+                    .card-body
+                        .badge-container#allTags
+
+    include ./misc/main.js.pug

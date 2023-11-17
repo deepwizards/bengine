@@ -1,0 +1,34 @@
+.card
+    .card-header Preview
+    .card-body
+        pre#requestData.code-editor-bg(style="height: 100%;")
+            | {
+            |     "messages": [{ "role": "system", "content": "#{preview}" }],
+            |     "model": "gpt-3.5-turbo"
+            | }
+.card
+    .card-header.d-flex.justify-content-between.align-items-center
+        | Templates
+        div.float-right
+            a.btn.btn-primary.btn-sm(href="/template/new" data-toggle="tooltip" title="New Template")
+                i.fas.fa-plus
+            a.btn.btn-primary.btn-sm(href="/template/manage" data-toggle="tooltip" title="Manage Templates")
+                i.fas.fa-cog
+    .card-body(style="cursor: pointer;")
+        //- .card.group-card
+        //-     .card-header.group-header(data-toggle="collapse" data-target="#template-all")
+        //-         All Templates
+        //-     .collapse.card-body.group-body(id="template-all", class=(allTemplates.some(template => template._id === currentTemplateId) ? 'show' : ''))
+        //-         ul.list-group
+        //-             each template in allTemplates
+        //-                 li.list-group-item(class=(template._id === currentTemplateId ? 'bg-active' : ''))
+        //-                     a(href=`/template/edit/${template._id}`)= template.name
+        each group in groups
+            .card.group-card
+                .card-header.group-header(data-toggle="collapse" data-target=`#group-${group._id}`)
+                    = group.name
+                .collapse.card-body.group-body(id=`group-${group._id}`, class=(group.list.some(template => template._id === currentTemplateId) ? 'show' : ''))
+                    ul.list-group
+                        each template in group.list
+                            li.list-group-item(class=(template._id === currentTemplateId ? 'bg-active' : ''))
+                                a(href=`/template/edit/${template._id}`)= template.name

@@ -1,0 +1,82 @@
+extends ../../../common/_layout
+include ../../../common/mixins/badge.pug
+
+block content
+    .container-fluid
+        .row
+            .col-md-3
+                .card.mt-4
+                    .card-header.bg-primary.fw
+                        h4 Flows
+                    .card-body
+                        ul#groupList.list-group
+                        p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                    .card-footer.text-center
+                        a.btn.btn-primary(href='/group')
+                            i.fas.fa-cogs
+                            span.ml-2 Manage Groups
+            .col-md-9
+                .card.mt-4
+                    //- .card-header
+                    //-     h4 Flows
+                    .card-body
+                        table#dataTable.table.table-striped(data-items=JSON.stringify(items))
+                            thead
+                                tr
+                                    th Name
+                                    th Description
+                                    th Actions
+                            tbody
+                                for item in items
+                                    tr
+                                        td= item.name
+                                        td= item.description
+                                        td
+                                            div.btn-group(role='group')
+                                                a.btn.btn-info.btn-sm(href='/flow/' + item._id)
+                                                    i.fas.fa-search
+                                                a.btn.btn-warning.btn-sm(href='/flow/edit/' + item._id)
+                                                    i.fas.fa-edit
+                                                form(method='POST' action='/flow/duplicate/' + item._id)
+                                                    button.btn.btn-primary.btn-sm(type='submit')
+                                                        i.fa.fa-copy
+                                                form(action='/flow/delete/' + item._id, method='POST', style='display:inline')
+                                                    button.btn.btn-danger.btn-sm(type='submit')
+                                                        i.fa.fa-trash
+                    .card-footer
+                        a.btn.btn-primary(href='/flow/new') Add New Flow
+    script(src='/static/js/group.js' defer)
+    script.
+        function renderItemRowFlow(item) {
+            return `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.description}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-info btn-sm" href="/flow/${item._id}">
+                                <i class="fas fa-search"></i>
+                            </a>
+                            <a class="btn btn-warning btn-sm" href="/flow/edit/${item._id}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="/flow/duplicate/${item._id}" method="POST" style="display:inline">
+                                <button class="btn btn-primary btn-sm" type="submit">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </form>
+                            <form action="/flow/delete/${item._id}" method="POST" style="display:inline">
+                                <button class="btn btn-danger btn-sm" type="submit">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>                
+                    </td>
+                </tr>
+            `;
+        }
+
+        window.groupModuleLoaded = function() {
+            initGroupModule('Flow', 'groupList', renderItemRowFlow);
+        };
+

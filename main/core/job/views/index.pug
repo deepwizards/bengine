@@ -1,0 +1,78 @@
+extends ../../../common/_layout
+include ../../../common/mixins/badge.pug
+
+block content
+    .container-fluid
+        .row
+            .col-md-3
+                .card.mt-4
+                    .card-header.bg-primary.fw
+                        h4 Jobs
+                    .card-body
+                        ul#groupList.list-group
+                        p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                    .card-footer.text-center
+                        a.btn.btn-primary(href='/group')
+                            i.fas.fa-cogs
+                            span.ml-2 Manage Groups
+            .col-md-9
+                .card.mt-4
+                    .card-header
+                        h4 Job
+                    .card-body
+                        table#dataTable.table.table-striped
+                            thead
+                                tr
+                                    th Name
+                                    th Status
+                                    th Type
+                                    th Flow_id
+                                    th 
+                            tbody
+                                for item in items
+                                    tr
+                                        td= item.name
+                                        td
+                                            +status-badge(item.status)
+                                        td= item.type
+                                        td= item.flow_id
+                                        td
+                                            div.btn-group(role='group')
+                                                a.btn.btn-info.btn-sm(href='/job/' + item._id)
+                                                    i.fas.fa-search
+                                                    | View More
+                                                a.btn.btn-warning.btn-sm(href='/job/edit/' + item._id)
+                                                    i.fas.fa-edit
+                                                    | Edit
+                                                form(action='/job/delete/' + item._id, method='POST', style='display:inline')
+                                                    button.btn.btn-danger.btn-sm(type='submit')
+                                                        i.fas.fa-trash-alt
+                                                        | Delete
+                    .card-footer
+                        a.btn.btn-primary(href='/job/new') Add New Job
+
+    script(src='/static/js/group.js' defer)
+    script.
+        function renderItemRowJob(item) {
+            return `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${statusBadge(item.status)}</td>
+                    <td>${item.type}</td>
+                    <td>${item.flow_id}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-info btn-sm" href="/job/${item._id}"><i class="fas fa-search"></i> View More</a>
+                            <a class="btn btn-warning btn-sm" href="/job/edit/${item._id}"><i class="fas fa-edit"></i> Edit</a>
+                            <form action="/job/delete/${item._id}" method="POST" style="display:inline">
+                                <button class="btn btn-danger btn-sm" type="submit"><i class="fas fa-trash-alt"></i> Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        window.groupModuleLoaded = function() {
+            initGroupModule('Job', 'groupList', renderItemRowJob);
+        };

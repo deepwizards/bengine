@@ -1,0 +1,42 @@
+extends ../../../common/_layout
+include ../../../common/mixins/service.pug
+
+block content
+    .container-fluid
+        .row
+            .col-md-3
+                .card.mt-4
+                    .card-header.bg-primary.fw
+                        h3 Services
+                    .card-body
+                        ul.list-group
+                            li.list-group-item
+                                a(href="/service") All
+                            each type in types
+                                li.list-group-item
+                                    a(href=`/service?type=${type}`)= type
+                    .card-footer.text-center
+                        a.btn.btn-primary(href='/service/new')
+                            i.fas.fa-plus
+                            span.ml-2 Add Service
+
+            .col-md-9
+                //- select(name="type" onchange="location = `/service?type=${this.value}`")
+                //-     option(value="/service") All
+                //-     each type in types
+                //-         option(value=`/service?type=${type}` selected=(req.query.type == type))= type
+                .row.mt-3
+                    if services.length
+                        each service in services
+                            .col-md-3
+                                .card.mt-4                                        
+                                    .card-body(style='height: 16vh;')
+                                        .row
+                                            .col-md-3.text-center
+                                                i(class=`fa fa-${service.icon}` style="font-size: 48px;")
+                                            .col-md-9
+                                                h6= service.name
+                                                p.text-muted #{service.api}:#{service.port}#{service.endpoint}
+                                                a.btn.btn-sm.btn-primary(href=`/edit/${service._id}`) Edit
+                        else
+                            p#noServiceMessage.text-center.text-muted No services found.

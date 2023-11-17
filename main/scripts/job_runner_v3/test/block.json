@@ -1,0 +1,9 @@
+[
+    {
+        "_id": "{BLOCK_ID}",
+        "type": "{BLOCK_TYPE_ID}",
+        "name": "InputData",
+        "body": "Sample input data",
+        "config": []
+    }
+]

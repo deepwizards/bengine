@@ -1,0 +1,72 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap")
+        link(rel="stylesheet", href="https://use.fontawesome.com/releases/v5.8.2/css/all.css")
+        style.
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            body {
+                background: linear-gradient(45deg, #000, #0a3c78);
+                background-color: rgba(0,0,0, 0.0);
+                font-family: 'Roboto', sans-serif;
+                margin: 0;
+            }
+            .card {
+                width: 400px;
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+            }
+            .card-header {
+                background-color: #0a3c78;
+                color: white;
+                font-weight: 700;
+                padding: 15px;
+                border-radius: 10px 10px 0 0;
+            }
+            .card-body {
+                padding: 30px;
+            }
+            .form-control {
+                border: none;
+                border-bottom: 1px solid #000;
+                border-radius: 0;
+            }
+            .form-control:focus {
+                box-shadow: none;
+            }
+            .submit-btn {
+                background-color: #0a3c78;
+                color: white;
+                font-weight: 700;
+                border-radius: 5px;
+                width: 100%;
+            }
+    body
+        .container
+            .row
+                .col-md-12
+                    h1.text-center(style="color: white;") B Engine
+                    hr
+                    br
+                    .card
+                        .card-header.text-center
+                            h4 Login to your account
+                        .card-body
+                            form(action='/admin/login', method='post')
+                                .form-group
+                                    label(for='username') Username:
+                                    input.form-control(type='text', name='username', id='username', required)
+                                .form-group
+                                    label(for='password') Password:
+                                    input.form-control(type='password', name='password', id='password', required)
+                                .form-group
+                                    input.btn.btn-success.btn-lg.btn-block(type='submit', value='Login')

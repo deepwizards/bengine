@@ -1,0 +1,70 @@
+script.
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentProjectId = "#{currentProjectId}";
+        // Toggle active class for list group items
+        document.querySelectorAll("li.list-group-item").forEach(item => {
+            const link = item.querySelector("a");
+            if (link && link.href.endsWith(`/project/${currentProjectId}`)) {
+                item.classList.add("bg-active");
+            }
+        });
+        // Expand groups that contain the active project
+        document.querySelectorAll(".group-body").forEach(group => {
+            const hasActive = Array.from(group.querySelectorAll("li.list-group-item")).some(item => item.classList.contains("bg-active"));
+            if (hasActive) {
+                const collapseElement = new bootstrap.Collapse(group, {
+                toggle: false
+                });
+                collapseElement.show();
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        // Event listener for modal trigger button
+        $('button[data-target="#jobModal"]').on('click', function() {
+            const flowId = $('.flow-row').attr('data-flow-id');
+            console.log(flowId)
+            $('#jobModal').attr('data-flow-id', flowId);
+        });
+        // Event listener for when the modal is shown
+        $('#jobModal').on('shown.bs.modal', function() {
+            const flowId = $(this).data('flow-id');
+            $(this).find('.job-link').each(function() {
+                const serviceId = $(this).attr('data-service-id');
+                $(this).attr('href', `/job/new?flow_id=${flowId}&service_id=${serviceId}`);
+            });
+        });
+
+        $('.group-header').on('click', function(event) {
+            event.stopPropagation();
+            const target = $(this).data('target');
+            $(target).toggleClass('show');
+        });
+
+        async function loadJobs(flowRow, detailsRow) {
+            const flowId = flowRow.data('flow-id');
+            const response = await fetch(`/project/api/jobs/${flowId}`);
+            const jobs = await response.json();
+            renderJobs(detailsRow, jobs, flowId);
+            detailsRow.removeClass('d-none');
+        }
+
+        $('tr.flow-row').click(async function() {
+            $(this).toggleClass('bg-active');
+            const detailsRow = $(this).next('.flow-details');
+            if (detailsRow.hasClass('d-none')) {
+                await loadJobs($(this), detailsRow);
+            } else {
+                detailsRow.addClass('d-none');
+            }
+        });
+
+        // Automatically load the first flow's jobs
+        const firstFlowRow = $('tr.flow-row').first();
+        const firstDetailsRow = $('tr.first-flow-details');
+        if (firstFlowRow.length > 0) {
+            firstFlowRow.addClass('bg-active');
+            loadJobs(firstFlowRow, firstDetailsRow);
+        }
+    });

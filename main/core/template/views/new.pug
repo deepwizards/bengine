@@ -1,0 +1,36 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        .row
+            .col-md-4.offset-md-4.mt-5
+                .card.mt-5
+                    .card-header
+                        h3.fa.fa-template &nbsp;NEW TEMPLATE
+                        form(action="/template/create" method="POST")
+                            .form-group
+                                label(for="name") Name:
+                                input.form-control(type="text" name="name" required)
+
+                            .form-group
+                                label(for="description") Description:
+                                textarea.form-control(name="description")
+
+                            .form-group
+                                label(for="notes") Notes:
+                                textarea.form-control(name="notes")
+
+                            .form-group
+                                label(for="service") Service:
+                                select.form-control(name="service")
+                                    each service in services
+                                        option(value=service._id) #{service.name}
+
+                            //- .form-group
+                            //-     label(for="status") Status:
+                            //-     input.form-control(type="text" name="status")
+
+                            .form-group
+                                button.btn.btn-primary.btn-block(type="submit") 
+                                    i.fa.fa-save.mr-2 
+                                    | Create Template

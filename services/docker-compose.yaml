@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  manager:
+    build: ./manager
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+      - openai
+    networks:
+      - app_network
+    env_file:
+      - .env
+
+  openai:
+    build: ./openai
+    ports:
+      - "3001:3001"
+    networks:
+      - app_network
+    env_file:
+      - .env
+
+  web:
+    build: ./web
+    ports:
+      - "3002:3002"
+    networks:
+      - app_network
+    env_file:
+      - .env
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+

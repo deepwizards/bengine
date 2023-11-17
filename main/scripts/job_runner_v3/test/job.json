@@ -1,0 +1,12 @@
+[
+    {
+        "_id": "{JOB_ID}",
+        "name": "Test Job",
+        "status": "pending",
+        "flow_id": "{FLOW_ID}",
+        "inputs": [],
+        "data": ["{DATA_ID}"],
+        "dependencies": [],
+        "outputs": []
+    }
+]

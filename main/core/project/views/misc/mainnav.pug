@@ -1,0 +1,126 @@
+.card
+    .card-header.d-flex.align-items-center.bg-primary.fw
+        h4.mr-auto=`PROJECT: ${project.name}`
+        +status-badge-lg(project.status)
+    .card-body
+        .row.pl-2
+            .col-md-5
+                p= project.description
+            .col-md-7
+                a.btn.btn-danger.float-right(href=`/project/delete/${project._id}` data-toggle="tooltip" data-placement="top" title="Delete project.")
+                    i.fas.fa-trash
+                a.btn.btn-danger.mr-2.float-right(href=`/project/cancel/${project._id}`, data-toggle="tooltip", data-placement="top", title="Cancel project.")
+                    i.fas.fa-ban
+                button.btn.btn-secondary.mr-2.float-right(type='button' data-toggle='modal' data-target='#replaceDependenciesModal')
+                    span(data-toggle="tooltip" data-placement="top" title="Replace flow dependencies.")
+                        i.fas.fa-exchange-alt
+                    | &nbsp; Deps
+                button.btn.btn-secondary.mr-2.float-right(type='button' data-toggle='modal' data-target='#replaceDataModal')
+                    span(data-toggle="tooltip" data-placement="top" title="Replace flow data.")
+                        i.fas.fa-exchange-alt
+                    | &nbsp; Data
+                form(method="POST", action=`/project/duplicate/${project._id}`, style="display: inline;")
+                    input(type="hidden", name="project_id", value=`${project._id}`)
+                    button.btn.btn-secondary.mr-2.float-right(type="submit" data-toggle="tooltip" data-placement="top" title="Duplicate project.")
+                        i.fas.fa-copy
+                button.btn.btn-secondary.mr-2.float-right(type='button' data-toggle='modal' data-target='#editModal')
+                    span(data-toggle="tooltip" data-placement="top" title="Edit project.")
+                        i.fas.fa-edit
+                a.btn.btn-success.mr-2.float-right(href=`/project/activate/${project._id}` data-toggle="tooltip" data-placement="top" title="Activate project.")
+                    i.fas.fa-play
+
+            
+.card.mt-2
+    .card-header.d-flex.align-items-center
+        h4.mr-auto FLOWS
+        div.float-right
+            button.btn.btn-success(type="button" data-toggle="modal" data-target="#flowModal")
+                i.fas.fa-plus
+                | Add New Flow
+
+    .card-body(style="height: 72vh; overflow-y: auto; cursor: pointer;")
+        if flows
+            table.table
+                thead
+                    tr
+                        th Flow Name
+                        th Status
+                        th Deps
+                        th Actions
+                tbody
+                    each flow, index in flows
+                        tr.flow-row(data-flow-id=flow._id)
+                            td= flow.name
+                            td
+                                +status-badge(flow.status)
+                            td= flow.dependencies ? flow.dependencies.length : "None"
+                            td
+                                a.btn.btn-sm.btn-primary.mr-1(href=`/flow/${flow._id}?project_id=${project._id}`)
+                                    i.fas.fa-search
+                                button.btn.btn-sm.btn-secondary.mr-1(type='button' data-toggle='modal' data-target='#editFlowModal')
+                                    span(data-toggle="tooltip" data-placement="top" title="Edit Flow.")
+                                        i.fas.fa-edit
+                                form(method="POST", action=`/flow/duplicate/${flow._id}`, style="display: inline;")
+                                    input(type="hidden", name="project_id", value=`${project._id}`)
+                                    button.btn.btn-sm.btn-secondary.mr-1(type="submit")
+                                        i.fas.fa-copy
+                                form(method="POST", action=`/flow/update/${flow._id}`, style="display: inline;")
+                                    input(type="hidden", name="action", value="rerun")
+                                    input(type="hidden", name="flow_id", value=`${flow._id}`)
+                                    button.btn.btn-sm.btn-success.mr-1(type="submit")
+                                        i.fas.fa-redo
+                                form(method="POST", action=`/flow/update/${flow._id}`, style="display: inline;")
+                                    input(type="hidden", name="action", value="cancel")
+                                    input(type="hidden", name="project_id", value=`${project._id}`)
+                                    button.btn.btn-sm.btn-danger.mr-1(type="submit")
+                                        i.fas.fa-ban
+                                a.btn.btn-sm.btn-danger(href=`/flow/delete/${flow._id}?project_id=${project._id}`)
+                                    i.fas.fa-trash
+                        tr.flow-details(class=(index === 0) ? 'first-flow-details' : 'd-none')
+                            td(colspan=4)
+                                table.table
+                                    thead
+                                        tr
+                                            th Job Name
+                                            th Type
+                                            th Status
+                                            th Deps
+                                            th Loops
+                                            th Actions
+                                    tbody
+                                .text-center
+                                    hr(style="background-color: #fff;")
+                                    a.btn.btn-success(href=`/job/new?flow_id=${flow._id}&project_id=${project._id}`) 
+                                        span(data-toggle="tooltip" data-placement="top" title="Add a new job to this flow.")
+                                            i.fas.fa-plus
+                                            | &nbsp;Add New Job
+
+
+                        #editFlowModal.modal.fade(tabindex="-1" role="document")
+                            .modal-dialog(role="document")
+                                .modal-content
+                                    .modal-header
+                                        h5.modal-title Edit Flow
+                                        button.close(type="button" data-dismiss="modal" aria-label="Close")
+                                            span(aria-hidden="true") &times;
+                                    .modal-body
+                                        .card
+                                                .card-header
+                                                    h4 Edit Flow
+                                                .card-body
+                                                    form(action='/flow/update/' + flow._id, method='POST')
+                                                        label(for='name') name
+                                                        input.form-control(type='text', id='name', name='name', value=flow.name, required)
+                                                        label(for='description') description
+                                                        input.form-control(type='text', id='description', name='description', value=flow.description)
+                                                        button.btn.btn-primary(type='submit') Update
+        hr
+        form(method="POST", action=`/project/flow/new/${project._id}`, style="display: inline;")
+            input(type="hidden", name="name", value="New Flow")
+            //- input(type="hidden", name="project_id", value=`${project._id}`)
+            button.btn.btn-success(type="submit")
+                i.fas.fa-plus
+                | Add New Flow
+        button.btn.btn-info(type="button" data-toggle="modal" data-target="#flowModal")
+            i.fas.fa-plus
+            | Clone Flow

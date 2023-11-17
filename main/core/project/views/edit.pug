@@ -1,0 +1,29 @@
+extends ../../../common/_layout
+
+block content
+    .container
+        .row
+            .col-md-3
+                .card.mt-4
+                    .card-header
+                        h4 Options
+                    .card-body
+                        a.btn.btn-primary.btn-block(href='/project/new') Add New Project
+                        a.btn.btn-primary.btn-block(href='/project') View All Projects
+                        a.btn.btn-primary.btn-block(href='/project/edit/' + item._id) Edit Project
+                        form(action='/project/delete/' + item._id, method='POST', style='display:inline')
+                            button.btn.btn-danger.btn-block(type='submit').mt-2
+                                i.fas.fa-trash-alt
+                                | &nbsp;Delete Project
+
+            .col-md-9
+                .card.mt-4
+                    .card-header
+                        h4 Edit Project
+                    .card-body
+                        form(action='/project/update/' + item._id, method='POST')
+                            label(for='name') name
+                            input.form-control(type='text', id='name', name='name', value=item.name, required)
+                            label(for='description') description
+                            input.form-control(type='text', id='description', name='description', value=item.description, required)
+                            button.btn.btn-primary(type='submit') Update

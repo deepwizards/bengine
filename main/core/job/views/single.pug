@@ -1,0 +1,85 @@
+extends ../../../common/_layout
+include ../../../common/mixins/badge.pug
+
+block content
+    .container-fluid
+        .row
+            .col-md-12
+                .card.mt-4
+                    .card-header.float-left
+                        h4.float-left= `Job: ${job.name}`
+                        +status-badge-lg-fr(job.status)
+                    .card-body
+                        a(href=`/flow/${job.flow_id}`)= `Flow ID: ${job.flow_id}`
+                        p.card-text= `Created At: ${moment(job.created_at).format('YYYY-MM-DD HH:mm:ss')}`
+                        if job.updated_at
+                            p.card-text= `Last Updated: ${moment(job.updated_at).format('YYYY-MM-DD HH:mm:ss')}`
+                        a.btn.btn-primary.float-right.mr-2(href=`/job/edit/${job._id}`) &nbsp;Edit
+                        a.btn.btn-danger.float-right.mr-2(href=`/job/delete/${job._id}`) &nbsp;Delete
+                        a.btn.btn-secondary.float-right.mr-2(href=`/flow/${job.flow_id}`) &nbsp;Return to Parent Flow
+            .col-md-12
+                .card.mt-4
+                    .card-body
+                        .row
+                            .col-md-8
+                                .card.mt-4
+                                    .card-header
+                                        h4= `Service: ${job.template.service.name}`
+                                    .card-body
+                                        .row
+                                            .col-md-2.text-center
+                                                i(class=`fa fa-${job.template.service.icon}` style="font-size: 48px;")
+                                                small.text-muted #{job.template.service.host}:#{job.template.service.port}/#{job.template.service.endpoint}
+                                            .col-md-10
+                                                .row
+                                                    .col-md-6
+                                                        .form-group.d-flex
+                                                            label.mr-2 API:
+                                                            p.mb-1 #{job.template.service.api}
+                                                        .form-group.d-flex
+                                                            label.mr-2 Description:
+                                                            p.mb-1 #{job.template.service.description}
+                                                    .col-md-6
+                                                        .form-group.d-flex
+                                                            label.mr-2 Input Format:
+                                                            p.mb-1 #{job.template.service.input_format}
+                                                        .form-group.d-flex
+                                                            label.mr-2 Output Format:
+                                                            p.mb-1 #{job.template.service.output_format}
+                            .col-md-4
+                                .card.mt-4
+                                    .card-header  
+                                        h4 Outputs
+                                    .card-body
+                                        if job.outputs.length >= 1
+                                            ul
+                                                each output in job.outputs
+                                                    li
+                                                        a(href='/output/' + output._id)= output._id
+                        .row
+                            .col-md-4
+                                .card.mb-3
+                                    .card-header 
+                                        h5 Template
+                                    .card-body
+                                        p.card-text
+                            .col.md-4
+                                if job.data.length >= 1
+                                    .card.mb-3
+                                        .card-header  
+                                            h5 Data
+                                        .card-body
+                                            ul.list-group
+                                                each data in job.data
+                                                    li.list-group-item(style='color: black;')
+                                                        a(href=`/data/${data._id}`)= data.name
+                            .col.md-4
+                                if job.dependencies.length >= 1
+                                    .card.mb-3
+                                        .card-header  
+                                            h5 Dependencies
+                                        .card-body
+                                            ul.list-group
+                                                each d in job.dependencies
+                                                    li.list-group-item(style='color: black;')
+                                                        a(href=`/job/${d._id}`)= d.name

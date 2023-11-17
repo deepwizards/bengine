@@ -1,0 +1,265 @@
+/* Begin dark theme CSS for Bootstrap 4.4 */
+
+/* Color palette */
+:root {
+    --orange: #6bbcff;
+    --gray: #2a2f33;
+    --black: #0e0d0d;
+    --white: #d8d8d8;
+    --charblue: #403e56;
+}
+
+/* General elements */
+body {
+    background: linear-gradient(45deg, #1d1c1c, #1c1c1c);
+    color: var(--white);
+}
+
+h1,h2,h3,h4,h5,h6 {
+    color: var(--orange);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+pre {
+    background-color: var(--gray);
+    color: var(--white);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace;
+}
+
+.fw h1, .fw h2, .fw h3, .fw h4, .fw h5, .fw h6 {
+    color: #fff!important;
+}
+
+.table-dark {
+    color: #dee2e6;
+    background-color: #343a40;
+  }
+  
+  .table-dark thead th {
+    color: #dee2e6;
+    background-color: #212529;
+    border-color: #32383e;
+  }
+  
+  .table-dark tbody tr:hover {
+    background-color: #2a2f35;
+  }
+  
+  .table-dark tbody td {
+    border-color: #32383e;
+  }
+  
+  .nav-tabs .nav-link {
+    color: #dee2e6;
+    background-color: #343a40;
+    border-color: #32383e;
+  }
+  
+  .nav-tabs .nav-link:hover {
+    color: #fff;
+    background-color: #2a2f35;
+    border-color: #32383e;
+  }
+  
+  .nav-tabs .nav-link.active {
+    color: #fff;
+    background-color: #2a2f35;
+    border-color: #32383e;
+    border-bottom-color: transparent;
+  }
+  
+  .modal-dark .modal-content {
+    background-color: #343a40;
+    color: #dee2e6;
+  }
+  
+  .modal-dark .modal-header,
+  .modal-dark .modal-footer {
+    border-color: #32383e;
+  }
+
+.modal-content {
+    background-color: var(--gray);
+    border: 1px solid #476368;
+}
+
+.modal-header {
+    border-bottom: 1px solid #476368!important;
+}
+
+.close {
+    color: #fff!important;
+}
+
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+    color: var(--white)!important;
+}
+
+.dataTables_filter label {
+    color: var(--white)!important;
+}
+/* Background and text color */
+.bg-dark {
+    background-color: var(--gray) !important;
+}
+
+.text-dark {
+    color: var(--gray) !important;
+}
+
+/* Links */
+a {
+    color: var(--orange);
+}
+
+a:hover {
+    color: var(--white);
+}
+
+/* Buttons */
+.btn {
+    /* background-image: linear-gradient(to bottom right, var(--orange), var(--gray)); */
+    border: none;
+    margin-right: 5px;
+}
+
+/* .btn:hover {
+    background-image: linear-gradient(to bottom right, var(--gray), var(--orange));
+} */
+
+/* Input fields */
+.form-control {
+    background-color: var(--gray);
+    color: var(--white);
+}
+
+.form-control:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 0.2rem rgba(255, 127, 0, 0.25);
+}
+
+/* Navbars */
+.navbar {
+    background-color: var(--black);
+}
+
+.navbar .nav-link {
+    color: var(--white);
+}
+
+.navbar .nav-link:hover {
+    color: var(--orange);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background-color: var(--gray);
+}
+
+.dropdown-item {
+    color: var(--white);
+}
+
+.dropdown-item:hover {
+    background-color: var(--orange);
+}
+
+/* Cards */
+.card {
+    background-color: var(--gray)!important;
+    border: 1px solid #bebebe!important;
+    border-radius: 3px;
+}
+
+.card-header {
+    background-color: var(--charblue);
+    color: var(--white);
+}
+
+.card-body {
+    background-color: #5b5b5b;
+}
+.card-footer {
+    background-color: var(--gray);
+    color: var(--white);
+}
+
+.card-text {
+    color: var(--white);
+}
+
+.card-link {
+    color: var(--orange);
+}
+
+.card-link:hover {
+    color: var(--gray);
+}
+
+/* Table */
+.table {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+.table th,
+.table td {
+    background-color: var(--gray);
+}
+
+.table thead th {
+    color: var(--orange);
+}
+
+.table-hover tbody tr:hover {
+    color: #fff;
+    font-size: 1.1rem;  
+}
+/* Pagination */
+.page-link {
+    color: var(--white);
+    background-color: var(--black);
+    border-color: var(--gray);
+}
+
+.page-link:hover {
+    color: var(--white);
+    background-color: var(--gray);
+    border-color: var(--black);
+}
+
+.page-item.active .page-link {
+    color: var(--black);
+    background-color: var(--orange);
+    border-color: var(--gray);
+}
+
+.list-group-item {
+    background-color: #000;
+}
+
+.bg-active {
+    background-color: #007bff !important;
+    color: white !important;
+}
+.bg-active > a {
+    color: white;
+}
+
+tr.bg-active,
+tr.bg-active > td,
+tr.bg-active > th {
+    background-color: #007bff !important;
+    color: white !important;
+}
+tr.bg-active > td > a {
+    color: white !important;
+}
+.flow-details {
+    transition: max-height 0.4s ease-in-out;
+    overflow: hidden;
+    max-height: 0;
+}

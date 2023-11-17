@@ -1,0 +1,35 @@
+script.
+	const updateTagCounts = (blocks) => {
+		countTags(blocks);
+		generateTagList(tagCounts);
+	};
+
+	const generateTagList = (tagCounts) => {
+		$('#allTags').empty();
+		Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).forEach(([tag, count]) => {
+			const badge = `<span class="badge badge-primary m-1 filter-tag" data-tag="${tag}">${tag} (${count})</span>`;
+			$('#allTags').append(badge);
+		});
+	};
+
+	const activeFilters = [];
+
+	const filterTableByTag = (tag, addFilter = true) => {
+		const table = $('#dataTable').DataTable();
+
+		if (addFilter) {
+			activeFilters.push(tag);
+			table.columns(2).search(tag).draw();
+		} else {
+			const index = activeFilters.indexOf(tag);
+			if (index > -1) {
+				table.columns(2).search(index).draw();
+			}
+			table.columns(2).search('').draw();
+		}
+
+		$('.block-row').hide();
+		activeFilters.forEach(activeTag => {
+			$(`.block-row[data-tags*="${activeTag}"]`).show();
+		});
+	};

@@ -1,0 +1,34 @@
+nav#sidebar.sidebar-wrapper
+	.sidebar-content
+		.sidebar-brand.bg-primary(style='border: solid 1px rgba(0, 0, 0, 0.125); height: 65px;')
+			div(style='color: #fff;')
+				strong bengine.ai
+			#close-sidebar(style='margin-left: 120px;')
+				i.fas.fa-bars.fw
+		.sidebar-menu(style='margin-top: 65px;')
+			ul
+				li(class=(title === 'dashboard') ? 'bg-info active' : undefined)
+					a(href='/dashboard')
+						span &nbsp;Dashboard
+				li(class=(title === 'queue') ? 'bg-info active' : undefined)
+					a(href='/queue')
+						span &nbsp;Activity Monitor
+				li(class=(title === 'project') ? 'bg-info active' : undefined)
+					a(href='/project')
+						span &nbsp;Project Manager
+				li(class=(title === 'data') ? 'bg-info active' : undefined)
+					a(href='/data/manager') Data Manager
+				li(class=(title === 'template') ? 'bg-info active' : undefined)
+					a(href='/template') Template Editor
+				
+				- const excludedModules = ['admin', 'settings', 'flow', 'output', 'job', 'project', 'data', 'prompt', 'queue', 'dashboard', 'install', 'module'];
+				each module in modules
+					if !excludedModules.includes(module)
+						li(class=(title === module.name) ? 'bg-info active' : 'bg-dark')
+							a(href=`/${module.name}`)
+								span=module.name.toUpperCase()
+		.sidebar-footer.pt-4
+			a(href='/admin')
+				| <h6>Admin</h6>			
+			a(href='/settings')
+				| <h6>Settings</h6>

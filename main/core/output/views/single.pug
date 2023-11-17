@@ -1,0 +1,52 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        .row
+            .col-md-3
+                .card.mt-4
+                    .card-header
+                        h4 Options
+                    .card-body
+                        a.btn.btn-primary.btn-block(href=`/job/${item.job_id}`) Back to Job
+                        a.btn.btn-primary.btn-block(href='/output') View All Outputs
+                        form(action='/output/delete/' + item._id, method='POST', style='display:inline')
+                            button.btn.btn-danger.btn-block(type='submit').mt-2
+                                i.fas.fa-trash-alt
+                                | &nbsp;Delete Output
+
+            .col-md-9
+                .card.mt-4
+                    .card-header
+                        h4= `View Output: ${item._id}`
+                    .card-body
+                        button.btn.btn-primary#copyButton(type="button")
+                            i.fas.fa-copy
+                            |  Copy
+                        hr
+                        pre#copyContent.
+                            !{JSON.parse(JSON.parse(JSON.stringify(item.body)))}
+    script.
+        document.addEventListener('DOMContentLoaded', () => {
+            const copyButton = document.getElementById('copyButton');
+            const contentToCopy = document.getElementById('copyContent');
+
+            copyButton.addEventListener('click', () => {
+                const textarea = document.createElement('textarea');
+                textarea.textContent = contentToCopy.textContent;
+                document.body.appendChild(textarea);
+                textarea.select();
+
+                try {
+                document.execCommand('copy');
+                //- alert('Content copied to clipboard');
+                } catch (err) {
+                console.error('Error copying content:', err);
+                //- alert('Error copying content');
+                }
+
+                document.body.removeChild(textarea);
+            });
+        });
+
+

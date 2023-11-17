@@ -1,0 +1,23 @@
+extends ../../../common/_layout
+
+block content
+    .container
+        .row
+            .col-md-12
+                .card.mt-4
+                    .card-header
+                        h4 Create New Data
+                    .card-body
+                        form(action='/data/create', method='POST')
+                            //- label(for='name') Name
+                            input#name.form-control(type='text', name='name', value="Enter Name for Data...", required)
+                            hr
+                            //- label(for='description') Description
+                            input#description.form-control(type='text', name='description', value="Enter Description of Data...", required)
+                            hr
+                            label(for='body') Data Body
+                            textarea#body.form-control(style='height:50vh;', type='text', name='body', required)
+                                | Paste and edit your text data here...
+                            hr
+                            button.btn.btn-primary(type='submit') Submit
+

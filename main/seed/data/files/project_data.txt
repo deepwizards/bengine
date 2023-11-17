@@ -1,0 +1,82 @@
+Project Name: Comprehensive System Monitor (CSM)
+Goal: Develop a comprehensive monitoring tool for MacOS that tracks network connections, file changes, and process activity, alerting the user to any suspicious activity.
+Features:
+1. Network Monitor: Logs all incoming and outgoing network connections, including IP addresses, ports, and geolocation information if possible. Flags connections to known malicious IPs or unusual ports.
+2. File Change Monitor: Monitors user-specified directories for changes, including creation, modification, or deletion of files. Flags unexpected or large numbers of changes.
+3. Process Monitor: Logs all process activity, including process creation, termination, and CPU/memory usage. Flags processes with high resource usage, uncommon processes, or processes with suspicious behavior such as attempting to access protected files.
+Technology Stack:
+* Primary language: Python
+* Database: SQLite (for ease of setup and use)
+* Possible additional libraries: psutil (for process monitoring), requests (for geolocation of IPs), watchdog (for file change monitoring), python-geoip (for geolocation)
+Development Steps:
+1. Environment Setup: Setup a Python development environment and install necessary libraries.
+2. Database Setup: Create a SQLite database with necessary tables for logging network connections, file changes, and process activity.
+3. Network Monitor Development: Develop the network monitor feature. This should run continuously in the background, logging all network connections and checking against a list of known malicious IPs or unusual ports.
+4. File Change Monitor Development: Develop the file change monitor feature. This should allow the user to specify directories to monitor, and should log any changes in these directories.
+5. Process Monitor Development: Develop the process monitor feature. This should run continuously in the background, logging all process activity.
+6. Alert System Development: Develop an alert system that flags suspicious activity, such as connections to known malicious IPs, unexpected file changes, or suspicious process activity.
+7. Testing: Thoroughly test all features and fix any bugs. Ensure that the system runs smoothly and doesn't use excessive system resources.
+8. Documentation: Document all features, usage instructions, and any necessary troubleshooting steps.
+
+ComprehensiveSystemMonitor/
+│
+├── README.md               # Project description, usage instructions
+├── requirements.txt        # List of Python dependencies
+├── setup.py                # Setup script for the project
+├── database/               # Directory for the database files
+│   └── csm.db              # SQLite database file
+│
+├── src/                    # Source code directory
+│   ├── __init__.py         # Init file for the package
+│   ├── main.py             # Main script to start the monitoring
+│   ├── config.py           # Configuration variables and constants
+│   ├── network_monitor.py  # Network monitoring script
+│   ├── file_monitor.py     # File change monitoring script
+│   ├── process_monitor.py  # Process monitoring script
+│   └── alert_system.py     # System for handling and sending alerts
+│
+├── tests/                  # Directory for test scripts
+│   ├── __init__.py         # Init file for the test package
+│   ├── test_network.py     # Tests for network monitor
+│   ├── test_file.py        # Tests for file monitor
+│   └── test_process.py     # Tests for process monitor
+│
+└── logs/                   # Directory for log files
+    ├── network.log         # Log file for network monitor
+    ├── file.log            # Log file for file monitor
+    └── process.log         # Log file for process monitor
+
+main.py
+This is the main entry point for the program.   
+* main(): Main function, starts the network, file, and process monitors.
+config.py
+This module will contain configuration constants.
+* MONITORED_DIRS: List of directories to be monitored for file changes.
+* SUSPICIOUS_IPS: List of known suspicious IPs.
+* SUSPICIOUS_PROCESSES: List of known suspicious process names.
+network_monitor.py
+This module will contain the functionality for network monitoring.
+    * class NetworkMonitor: Class for the network monitor.
+    * __init__(self): Constructor, initializes network monitor.
+    * start_monitoring(self): Starts monitoring network traffic.
+    * log_connection(self, connection): Logs a network connection.
+    * check_suspicious(self, connection): Checks if a network connection is suspicious.
+file_monitor.py
+This module will contain the functionality for file change monitoring.
+    * class FileMonitor: Class for the file monitor.
+    * __init__(self, dirs): Constructor, initializes file monitor with list of directories to monitor.
+    * start_monitoring(self): Starts monitoring file changes.
+    * log_change(self, change): Logs a file change.
+    * check_suspicious(self, change): Checks if a file change is suspicious.
+process_monitor.py
+This module will contain the functionality for process monitoring.
+    * class ProcessMonitor: Class for the process monitor.
+    * __init__(self): Constructor, initializes process monitor.
+    * start_monitoring(self): Starts monitoring process activity.
+    * log_activity(self, activity): Logs a process activity.
+    * check_suspicious(self, activity): Checks if a process activity is suspicious.
+alert_system.py
+This module will handle alerts for suspicious activity.
+    * class AlertSystem: Class for the alert system.
+    * __init__(self): Constructor, initializes alert system.
+    * send_alert(self, type, details): Sends an alert about suspicious activity. The type parameter specifies the type of alert (network, file, or process), and the details parameter contains information about the suspicious activity.

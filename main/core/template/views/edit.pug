@@ -1,0 +1,18 @@
+extends ../../../common/_layout
+include ../../../common/mixins/service.pug
+
+block content
+    .container-fluid
+        input#tid(type=text, value=template._id, hidden)
+        .row
+            .col-md-12
+                include ./misc/main.pug
+        .row
+            .col-md-3
+                include ./misc/blocks.pug
+            .col-md-5
+                include ./misc/editor.pug
+            .col-md-4
+                include ./misc/preview.pug
+    include ./misc/modals.pug
+    include ./misc/js.pug

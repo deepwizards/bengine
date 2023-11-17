@@ -1,0 +1,50 @@
+include ./blocks.js.pug
+include ./filterTags.js.pug
+include ./editorActions.js.pug
+script.
+	$(document).ready(function () {
+		let blocks = !{JSON.stringify(blocks)};
+		console.log(blocks)
+		let activeFilters = [];
+
+		updateTagCounts(blocks);
+
+		const toggleFilterTagActive = (tag) => {
+			const $tagElement = $(`.filter-tag[data-tag="${tag}"]`);
+			$tagElement.toggleClass('badge-dark badge-primary');
+
+			if ($tagElement.hasClass('badge-primary')) {
+				filterTableByTag(tag);
+			} else {
+				filterTableByTag(tag, false);
+			}
+		};
+
+		$(document).on('click', '.filter-tag', function () {
+			const tag = $(this).attr('data-tag');
+			toggleFilterTagActive(tag);
+		});
+
+		$('.filter-tag-list').on('click', '.filter-tag', function () {
+			const tag = $(this).attr('data-tag');
+			toggleFilterTagActive(tag);
+		});
+
+		$('#dataTable tbody').on('click', '.badge', function () {
+			const tag = $(this).text().trim();
+			toggleFilterTagActive(tag);
+		});
+
+		$('#dataTable').on('click', 'tbody tr', function () {
+			currentBlockId = $(this).data('block-id');
+			$.get(`/block/${currentBlockId}`, function (block) {
+				$('#editorName').val(block.name);
+				$('#editorBody').val(block.body);
+				renderTagsToEditor(block.tags);
+			});
+		});
+
+		$('#saveChanges').on('click', saveChanges);
+		$('#deleteBlock').on('click', deleteBlock);
+	});
+

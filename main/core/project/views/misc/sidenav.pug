@@ -1,0 +1,27 @@
+.card-header.bg-primary.d-flex.justify-content-between.align-items-center
+    | Projects
+    div.float-right
+        a.btn.btn-primary.btn-sm(href="/project/new" data-toggle="tooltip" title="New Project")
+            i.fas.fa-plus
+        a.btn.btn-primary.btn-sm(href="/group" data-toggle="tooltip" title="Manage Groups")
+            i.fas.fa-cog
+.card-body(style="cursor: pointer;")
+    //- .card.group-card
+    //-     .card-header.group-header(data-toggle="collapse" data-target="#group-all")
+    //-         All Projects
+    //-     .collapse.card-body.group-body(id="group-all", class=(allProjects.some(project => project._id === currentProjectId) && !groups.some(group => group.list.some(project => project._id === currentProjectId)) ? 'show' : ''))
+    //-         ul.list-group
+    //-             each project in allProjects
+    //-                 li.list-group-item(class=(project._id === currentProjectId && !groups.some(group => group.list.some(p => p._id === currentProjectId)) ? 'bg-active' : ''))
+    //-                     a(href=`/project/${project._id}`)= project.name
+    a.card.group-card(href="/project")
+        .card-header.group-header ALL Projects
+    each group in groups
+        .card.group-card
+            .card-header.group-header(data-toggle="collapse" data-target=`#group-${group._id}`)
+                = group.name
+            .collapse.card-body.group-body(id=`group-${group._id}`, class=(group.list.some(project => project._id === currentProjectId) ? 'show' : ''))
+                ul.list-group
+                    each project in group.list
+                        li.list-group-item(class=(project._id === currentProjectId && groups.some(group => group.list.some(p => p._id === currentProjectId)) ? 'bg-active' : ''))
+                            a(href=`/project/${project._id}`)= project.name

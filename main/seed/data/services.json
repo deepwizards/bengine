@@ -1,0 +1,42 @@
+[
+    {
+        "name": "OpenAI GPT",
+        "description": "OpenAI API for GPT and other models",
+        "api": "openai",
+        "port": 3001,
+        "endpoint": "/gpt",
+        "icon": "laptop",
+        "input_format": "string",
+        "output_format": "string"
+    },
+    {
+        "name": "Web - Search",
+        "description": "Search the web and get back SERP results in JSON",
+        "api": "web",
+        "port": 3002,
+        "endpoint": "/search",
+        "icon": "search",
+        "input_format": "string",
+        "output_format": "JSON"
+    },
+    {
+        "name": "Web - Scrape",
+        "description": "Scrape the HTML of a given Website and organize it into a JSON",
+        "api": "web",
+        "port": 3002,
+        "endpoint": "/scrape",
+        "icon": "code",
+        "input_format": "string",
+        "output_format": "JSON"
+    },
+    {
+        "name": "Web - Sitemap",
+        "description": "Get the Sitemap from a given Website and return all the URLs in a JSON",
+        "api": "web",
+        "port": 3002,
+        "endpoint": "/sitemap",
+        "icon": "sitemap",
+        "input_format": "string",
+        "output_format": "JSON"
+    }
+]

@@ -1,0 +1,40 @@
+.card
+    .card-header
+        h5 Outputs
+    .card-body(style="max-height: 18vh; overflow-y: scroll;")
+        if !outputs
+            p.text-center.mt-4 No Outputs Yet...
+        else
+            if outputs.length >= 1
+                ul
+                each output in outputs
+                    li
+                        a(href=`/output/${output._id}`)= output._id    
+    if outputs
+        .card-footer.text-center
+                                i.fas.fa-download
+        | &nbsp;Download
+        br
+        button.btn.btn-primary.mt-2.mr-2(onclick=`window.location.href='/project/downloadOutputs/${project._id}'` data-toggle="tooltip" data-placement="top" title="Download all output files.")
+            i.fas.fa-list
+            | &nbsp; Multi Files
+        button.btn.btn-primary.mt-2(onclick=`window.location.href='/project/mergeOutputs/${project._id}'` data-toggle="tooltip" data-placement="top" title="Merge all output files into one.")
+            i.fas.fa-file
+            | &nbsp; Single File
+
+.card.mt-2
+    .card-header
+        h5 Project Details
+    .card-body
+        p ID: #{project._id}
+        p Created: #{moment(project.createdAt).format('MMM Do YY, h:mm')}
+        p Updated: #{moment(project.updatedAt).format('MMM Do YY, h:mm')}
+//- .card.mt-2
+//-     .card-header
+//-         h5 Project Statistics
+//-     .card-body
+        //- p Cost of each flow: #{flow.cost}
+        //- p Character count: #{flow.characterCount}
+        //- p Token count: #{flow.tokenCount}
+        //- p Cost of Project: #{project.totalCost}
+        //- p Number of flows: #{project.flowsCount}

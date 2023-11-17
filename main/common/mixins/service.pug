@@ -1,0 +1,37 @@
+mixin service-info(service)
+    .container
+        .row
+            .col-md-2
+            .col-md-8
+                .card.mt-4
+                    .card-header
+                        h4= service.name
+                    .card-body
+                        .row
+                            .col-md-2.text-center
+                                i(class=`fa fa-${service.icon}` style="font-size: 48px;")
+                                small.text-muted #{service.host}:#{service.port}/#{service.endpoint}
+                            .col-md-10
+                                .row
+                                    .col-md-6
+                                        .form-group.d-flex
+                                            label.mr-2 API:
+                                            p.mb-1 #{service.api}
+                                        .form-group.d-flex
+                                            label.mr-2 Description:
+                                            p.mb-1 #{service.description}
+                                    .col-md-6
+                                        .form-group.d-flex
+                                            label.mr-2 Input Format:
+                                            p.mb-1 #{service.input_format}
+                                        .form-group.d-flex
+                                            label.mr-2 Output Format:
+                                            p.mb-1 #{service.output_format}
+
+mixin service-badge(service)
+    .card.text-center
+        .card-header
+            h4= service.name
+        .card-body
+            i(class=`fa fa-${service.icon}` style="font-size: 48px;")
+            //- small.text-muted #{service.host}:#{service.port}/#{service.endpoint}

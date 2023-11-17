@@ -1,0 +1,38 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        .row
+            .col-md-3
+                
+                .card.mt-4
+                    .card-header
+                        h4= `Data: ${item.name}`
+                    .card-body
+                        ul
+                            li
+                                span=`Data ID: ${item._id}`
+                            li
+                                span=`Description: ${item.description}`
+                            li
+                                span=`Created At: ${item.createdAt}`
+                            li
+                                span=`Updated At: ${item.updatedAt}`
+                .card.mt-4
+                    .card-header
+                        h4 Options
+                    .card-body
+                        a.btn.btn-primary.btn-block(href='/data/new') Add New Data
+                        a.btn.btn-primary.btn-block(href='/data') View All Data
+                        a.btn.btn-primary.btn-block(href='/data/edit/' + item._id) Edit Data
+                        form(action='/data/delete/' + item._id, method='POST', style='display:inline')
+                            button.btn.btn-danger.btn-block(type='submit').mt-2
+                                i.fas.fa-trash-alt
+                                | &nbsp;Delete Data
+            
+            .col-md-9
+                .card.mt-4
+                    .card-header
+                        h4 Data Body
+                    .card-body
+                        pre= item.body

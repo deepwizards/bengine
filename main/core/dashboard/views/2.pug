@@ -1,0 +1,68 @@
+extends ../../../common/_layout
+
+block content
+
+    .container
+        h1.mt-3.display-4 Dashboard
+        ul.nav.nav-tabs(role="tablist")
+            li.nav-item
+                a.nav-link.active(href="#jobs", data-toggle="tab", role="tab") Jobs
+            li.nav-item
+                a.nav-link(href="#projects", data-toggle="tab", role="tab") Projects
+            li.nav-item
+                a.nav-link(href="#flows", data-toggle="tab", role="tab") Flows
+        .tab-content
+            #jobs.tab-pane.active(role="tabpanel")
+                .row
+                    .col-md-6
+                        .card
+                            .card-header
+                                i.fas.fa-tasks.icon.mr-2
+                                span.h5.font-weight-bold Job Status
+                            ul.list-group.list-group-flush
+                                each jobStatus in data.jobStatuses
+                                    li.list-group-item.text-dark.h6 #{jobStatus.name}: #{jobStatus.value}
+                    .col-md-6
+                        .card
+                            .card-header
+                                i.fas.fa-dollar-sign.icon.mr-2
+                                span.h5.font-weight-bold Cost Calculation
+                            ul.list-group.list-group-flush
+                                each cost in data.costs
+                                    li.list-group-item.text-dark.h6 #{cost.name}: #{cost.value}
+            #projects.tab-pane(role="tabpanel")
+                .row
+                    .col-md-6
+                        .card
+                            .card-header
+                                i.fas.fa-project-diagram.icon.mr-2
+                                span.h5.font-weight-bold Project Status
+                            ul.list-group.list-group-flush
+                                each projectStatus in data.projectStatuses
+                                    li.list-group-item.text-dark.h6 #{projectStatus.name}: #{projectStatus.value}
+                    .col-md-6
+                        .card
+                            .card-header
+                                i.fas.fa-chart-pie.icon.mr-2
+                                span.h5.font-weight-bold Stats
+                            ul.list-group.list-group-flush
+                                each stat in data.stats
+                                    li.list-group-item.text-dark.h6 #{stat.name}: #{stat.value}
+            #flows.tab-pane(role="tabpanel")
+                .row
+                    .col-md-6
+                        .card
+                            .card-header
+                                i.fas.fa-random.icon.mr-2
+                                span.h5.font-weight-bold Flow Status
+                            ul.list-group.list-group-flush
+                                each flowStatus in data.flowStatuses
+                                    li.list-group-item.text-dark.h6 #{flowStatus.name}: #{flowStatus.value}
+                    .col-md-6
+                        .card
+                            .card-header
+                                i.fas.fa-cloud.icon.mr-2
+                                span.h5.font-weight-bold API Update Status
+                            ul.list-group.list-group-flush
+                                each apiStatus in data.apiStatuses
+                                    li.list-group-item.text-dark.h6 #{apiStatus.name}: #{apiStatus.value}

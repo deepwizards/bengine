@@ -1,0 +1,41 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid.mt-3
+        .row
+            .col-md-12
+                .card
+                    .card-header
+                        i.fas.fa-edit
+                        span.ml-2 Edit Service
+                    .card-body
+                        form(action=`/edit/${service._id}` method="post")
+                            .form-group
+                                label Name
+                                input.form-control(name="name" value=service.name)
+                            .form-group
+                                label Description
+                                textarea.form-control(name="description")= service.description
+                            .form-group
+                                label API
+                                input.form-control(name="api" value=service.api)
+                            .form-group
+                                label Port
+                                input.form-control(type="number" name="port" value=service.port)
+                            .form-group
+                                label Endpoint
+                                input.form-control(name="endpoint" value=service.endpoint)
+                            .form-group
+                                label Icon
+                                div.input-group
+                                    span.input-group-prepend
+                                        span.input-group-text
+                                            i.fas.fa-icons
+                                    input.form-control(name="icon" value=service.icon)
+                            .form-group
+                                label Type
+                                input.form-control(name="type" value=service.type)
+                            .form-group.text-right
+                                button.btn.btn-primary(type="submit")
+                                    i.fas.fa-save
+                                    span.ml-2 Save

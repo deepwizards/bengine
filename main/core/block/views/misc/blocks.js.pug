@@ -1,0 +1,30 @@
+script.
+		let currentBlockId = null;
+		let tagCounts = {};
+	
+		const getTagsFromEditor = () => {
+			const tags = [];
+			$('#editorTags span').each(function () {
+				tags.push($(this).text().trim());
+			});
+			return tags;
+		};
+	
+		const renderTagsToEditor = (tags) => {
+			$('#editorTags').empty();
+			tags.forEach((tag) => {
+				const badge = `<span class="badge badge-primary mr-2">${tag}<i class="fa fa-times ml-2 remove-tag"></i></span>`;
+				$('#editorTags').append(badge);
+			});
+		};
+	
+		const countTags = (blocks) => {
+			tagCounts = {};
+			blocks.forEach((block) => {
+				if (block.tags) {
+					block.tags.forEach((tag) => {
+						tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+					});
+				}
+			});
+		};

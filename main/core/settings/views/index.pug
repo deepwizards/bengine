@@ -1,0 +1,180 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        .row.text-center
+            .col-lg-3.col-md-6.mb-4
+                a.card.text-white.bg-primary(href="/module")
+                    .card-body.text-center
+                        i.fas.fa-cube.fa-5x.mb-3
+                        h4.card-title Module Manager
+            .col-lg-3.col-md-6.mb-4
+                a.card.text-white.bg-secondary(href="/service")
+                    .card-body.text-center
+                        i.fas.fa-cogs.fa-5x.mb-3
+                        h4.card-title Service Manager
+            .col-lg-3.col-md-6.mb-4
+                a.card.text-white.bg-success(href="/dataseed")
+                    .card-body.text-center
+                        i.fas.fa-seedling.fa-5x.mb-3
+                        h4.card-title Dataseed Manager
+            .col-lg-3.col-md-6.mb-4
+                a.card.text-white.bg-danger(href="/config")
+                    .card-body.text-center
+                        i.fas.fa-cog.fa-5x.mb-3
+                        h4.card-title System Config
+
+        //- .row
+        //-     .col-md-3
+        //-         .list-group#settings-navigation
+        //-     .col-md-9#settings-content
+
+    script.
+        const settingsSections = [
+            {
+                title: "General Settings",
+                settings: [
+                    { label: "Site Title", type: "text" },
+                    { label: "Tagline", type: "text" },
+                    { label: "Language", type: "select", options: ["English", "Spanish", "French"] },
+                    { label: "Timezone", type: "select", options: ["UTC-05:00", "UTC+00:00"] },
+                    { label: "Date Format", type: "select", options: ["MM/DD/YYYY", "DD/MM/YYYY"] },
+                    { label: "Enable Maintenance Mode", type: "checkbox" },
+                    { label: "Google Analytics ID", type: "text" },
+                    { label: "Enable Registration", type: "checkbox" },
+                    { label: "Registration Confirmation Required", type: "checkbox" },
+                    { label: "Default User Role", type: "select", options: ["Admin", "Editor", "Subscriber"] },
+                ],
+            },
+            {
+                title: "Email Settings",
+                settings: [
+                    { label: "SMTP Host", type: "text" },
+                    { label: "SMTP Port", type: "number" },
+                    { label: "SMTP Username", type: "text" },
+                    { label: "SMTP Password", type: "password" },
+                    { label: "From Email", type: "text" },
+                    { label: "From Name", type: "text" },
+                    { label: "Enable SSL", type: "checkbox" },
+                    { label: "Send Test Email To", type: "text" },
+                ],
+            },
+            {
+                title: "Security Settings",
+                settings: [
+                    { label: "Password Length", type: "number" },
+                    { label: "Password Complexity", type: "select", options: ["Low", "Medium", "High"] },
+                    { label: "Session Timeout", type: "number" },
+                    { label: "Enable Two-Factor Authentication", type: "checkbox" },
+                    { label: "Brute Force Detection", type: "checkbox" },
+                    { label: "Limit Login Attempts", type: "checkbox" },
+                ],
+            },
+            {
+                title: "Content Settings",
+                settings: [
+                    { label: "Default Post Category", type: "text" },
+                    { label: "Posts Per Page", type: "number" },
+                    { label: "Allow Comments", type: "checkbox" },
+                    { label: "Comment Moderation", type: "checkbox" },
+                    { label: "Auto Save Interval", type: "number" },
+                    { label: "Media Upload Path", type: "text" },
+                    { label: "Max Upload Size", type: "number" },
+                ],
+            },
+            {
+                title: "Billing & Subscription",
+                settings: [
+                    { label: "Currency", type: "select", options: ["USD", "EUR", "GBP"] },
+                    { label: "Payment Gateway", type: "select", options: ["Stripe", "PayPal", "Square"] },
+                    { label: "Enable Free Trial", type: "checkbox" },
+                    { label: "Trial Duration", type: "number" },
+                    { label: "Subscription Plans", type: "select", options: ["Basic", "Premium", "Enterprise"] },
+                    { label: "Tax Rate (%)", type: "number" },
+                    { label: "Invoice Prefix", type: "text" },
+                ],
+            },
+            {
+                title: "API & Integrations",
+                settings: [
+                    { label: "Enable REST API", type: "checkbox" },
+                    { label: "API Key", type: "text" },
+                    { label: "Enable CORS", type: "checkbox" },
+                    { label: "Trusted Domains", type: "text" },
+                    { label: "Slack Webhook URL", type: "text" },
+                    { label: "Salesforce Integration", type: "checkbox" },
+                ],
+            },
+            {
+                title: "User Interface & Experience",
+                settings: [
+                    { label: "Theme", type: "select", options: ["Dark", "Light"] },
+                    { label: "Default Landing Page", type: "select", options: ["Dashboard", "Profile"] },
+                    { label: "Enable Tooltips", type: "checkbox" },
+                    { label: "Show Breadcrumbs", type: "checkbox" },
+                    { label: "Items Per Table Page", type: "number" },
+                    { label: "Enable Notifications Popup", type: "checkbox" },
+                ],
+            },
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+        const settingsNavigation = document.getElementById('settings-navigation');
+        const settingsContent = document.getElementById('settings-content');
+
+        settingsSections.forEach((section, index) => {
+            // Navigation
+            const navItem = document.createElement('a');
+            navItem.className = 'list-group-item list-group-item-action';
+            navItem.href = `#section-${index}`;
+            navItem.innerText = section.title;
+            settingsNavigation.appendChild(navItem);
+
+            // Section content
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'section';
+            sectionDiv.id = `section-${index}`;
+
+            const sectionTitle = document.createElement('h2');
+            sectionTitle.innerText = section.title;
+            sectionDiv.appendChild(sectionTitle);
+
+            section.settings.forEach(setting => {
+            const settingDiv = document.createElement('div');
+            settingDiv.className = 'setting';
+
+            const label = document.createElement('label');
+            label.innerText = setting.label;
+            settingDiv.appendChild(label);
+
+            let input;
+            switch (setting.type) {
+                case 'text':
+                case 'number':
+                case 'password':
+                input = document.createElement('input');
+                input.type = setting.type;
+                break;
+                case 'select':
+                input = document.createElement('select');
+                setting.options.forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option;
+                    optionElement.innerText = option;
+                    input.appendChild(optionElement);
+                });
+                break;
+                case 'checkbox':
+                input = document.createElement('input');
+                input.type = 'checkbox';
+                break;
+            }
+
+            settingDiv.appendChild(input);
+            sectionDiv.appendChild(settingDiv);
+            });
+
+            settingsContent.appendChild(sectionDiv);
+        });
+        });
+

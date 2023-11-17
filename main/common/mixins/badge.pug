@@ -1,0 +1,59 @@
+mixin status-badge(status)
+  span.badge.badge-pill(class=`badge-${status}`)
+    b
+      case status
+        when 'inactive'
+          i.fa.fa-ban
+        when 'active'
+          i.fa.fa-cogs
+        when 'blocked'
+          i.fa.fa-ban
+        when 'pending'
+          i.fa.fa-exclamation-circle
+        when 'complete'
+          i.fa.fa-check-circle
+        when 'open'
+          i.fa.fa-circle
+        when 'looping'
+          i.fa.fa-redo
+      | &nbsp;#{status}
+
+mixin status-badge-lg(status)
+  span.badge.badge-lg(class=`badge-${status}-lg`)
+    b
+      case status
+        when 'inactive'
+          i.fa.fa-ban
+        when 'active'
+          i.fa.fa-cogs
+        when 'blocked'
+          i.fa.fa-ban
+        when 'pending'
+          i.fa.fa-exclamation-circle
+        when 'complete'
+          i.fa.fa-check-circle
+        when 'open'
+          i.fa.fa-circle
+        when 'looping'
+          i.fa.fa-redo
+      | &nbsp;#{status}
+
+mixin status-badge-lg-fr(status)
+  span.badge.badge-lg.float-right(class=`badge-${status}-lg`)
+    b
+      case status
+        when 'inactive'
+          i.fa.fa-ban
+        when 'active'
+          i.fa.fa-cogs
+        when 'blocked'
+          i.fa.fa-ban
+        when 'pending'
+          i.fa.fa-exclamation-circle
+        when 'complete'
+          i.fa.fa-check-circle
+        when 'open'
+          i.fa.fa-circle
+        when 'looping'
+          i.fa.fa-redo
+      | &nbsp;#{status}

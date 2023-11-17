@@ -1,0 +1,19 @@
+extends ../../../common/_layout
+
+block content
+    .container
+        .row
+            .col-md-12
+                .card.mt-4
+                    .card-header
+                        h4 Create Flow
+                    .card-body
+                        form(action='/flow/create', method='POST')
+                            //- label(for='name') name
+                            input.form-control(type='text', id='name', name='name', value="Enter Flow Name here...", required)
+                            hr
+                            label(for='description') Flow Description
+                            textarea.form-control(style="height: 15vh;", type='text', id='description', name='description', required)
+                                | Enter Flow Description here...
+                            hr
+                            button.btn.btn-primary(type='submit') Submit

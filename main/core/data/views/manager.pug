@@ -1,0 +1,174 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        nav.navbar.navbar-expand-lg.navbar-light.bg-light
+            a.navbar-brand(href="/") Data Manager Portal
+            button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
+                span.navbar-toggler-icon
+            .collapse.navbar-collapse#navbarNav
+                ul.navbar-nav.mr-auto
+                    li.nav-item
+                        a.btn.btn-primary.card(href="/data") Data
+                            .card-body
+                                h5.card-title Data
+                                p.card-text Access and manage your datasets here.
+                    li.nav-item
+                        a.btn.btn-secondary.card(href="/jobs") Jobs
+                            .card-body
+                                h5.card-title Jobs
+                                p.card-text Manage and monitor your data processing jobs.
+                    li.nav-item
+                        a.btn.btn-success.card(href="/flows") Flows
+                            .card-body
+                                h5.card-title Flows
+                                p.card-text Configure and automate your data workflows.
+                    li.nav-item
+                        a.btn.btn-danger.card(href="/projects") Projects
+                            .card-body
+                                h5.card-title Projects
+                                p.card-text Collaborate on data-centric projects.
+                    li.nav-item
+                        a.btn.btn-warning.card(href="/groups") Groups
+                            .card-body
+                                h5.card-title Groups
+                                p.card-text Manage your team and permissions.
+                    li.nav-item
+                        a.btn.btn-info.card(href="/output") Output
+                            .card-body
+                                h5.card-title Output
+                                p.card-text View and export the results of your data processes.
+
+        .row.mt-4
+            .col-md-6
+                .card
+                    .card-body
+                        h5.card-title Data Analytics
+                        p.card-text Quick overview of your data statistics.
+                        ul.list-group.list-group-flush
+                            li.list-group-item Total Data Records: 1200
+                            li.list-group-item Active Jobs: 35
+                            li.list-group-item Running Flows: 10
+                            li.list-group-item Open Projects: 8
+                            li.list-group-item User Groups: 5
+                            li.list-group-item Outputs Generated: 150
+
+            .col-md-6
+                .card
+                    .card-body
+                        h5.card-title Recent Activities
+                        p.card-text Track the latest activities in your portal.
+                        ul.list-group.list-group-flush
+                            li.list-group-item Job #1234 completed
+                            li.list-group-item New data added to Project Alpha
+                            li.list-group-item Flow Beta triggered
+                            li.list-group-item User John Doe joined Group Gamma
+
+        .row.mt-4
+            .col-md-12
+                .card
+                    .card-body
+                        h5.card-title Real-Time Data Monitoring
+                        p.card-text Keep an eye on your data as it changes.
+                        #dataMonitor
+                            p Loading data...
+                .row.mt-4
+            .col-md-4
+                .card
+                    .card-header User Engagement
+                    .card-body
+                        p.card-text Visualize user interaction with the portal.
+                        canvas#userEngagementChart
+                            p Chart loading...
+
+            .col-md-4
+                .card
+                    .card-header System Health
+                    .card-body
+                        p.card-text Overview of system performance and health.
+                        ul.list-group.list-group-flush
+                            li.list-group-item CPU Usage: 45%
+                            li.list-group-item Memory Usage: 60%
+                            li.list-group-item Disk Space: 70%
+
+            .col-md-4
+                .card
+                    .card-header Feedback and Suggestions
+                    .card-body
+                        p.card-text Latest feedback from users.
+                        ul.list-group.list-group-flush
+                            li.list-group-item "Great tool for data management!" - User A
+                            li.list-group-item "Need more features in data visualization." - User B
+                            li.list-group-item "Excellent support and documentation." - User C
+
+        .row.mt-4
+            .col-md-12
+                .card
+                    .card-header Task Manager
+                    .card-body
+                        p.card-text Manage and assign tasks within your team.
+                        table.table.table-striped
+                            thead
+                                tr
+                                    th Task ID
+                                    th Description
+                                    th Assigned To
+                                    th Status
+                            tbody
+                                tr
+                                    td 001
+                                    td Data import from source X
+                                    td Alice
+                                    td In Progress
+                                tr
+                                    td 002
+                                    td Analyze dataset Y
+                                    td Bob
+                                    td Pending
+                                tr
+                                    td 003
+                                    td Update project Z documentation
+                                    td Charlie
+                                    td Completed
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js")
+        script.
+            $(document).ready(function() {
+                // Refresh Data Monitor
+                function refreshDataMonitor() {
+                    $('#dataMonitor').html('<p>New data loaded at ' + new Date().toLocaleTimeString() + '</p>');
+                }
+                setInterval(refreshDataMonitor, 5000);
+
+                // Initialize User Engagement Chart
+                function initializeUserEngagementChart() {
+                    var canvas = document.getElementById('userEngagementChart');
+                    if (canvas && canvas.getContext) {
+                        var ctx = canvas.getContext('2d');
+                        var userEngagementChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                                datasets: [{
+                                    label: 'User Visits',
+                                    data: [12, 19, 3, 5, 2, 3],
+                                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                                    borderColor: 'rgba(0, 123, 255, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        console.error('Canvas element not found or not supported');
+                    }
+                }
+                initializeUserEngagementChart();
+            });
+
+

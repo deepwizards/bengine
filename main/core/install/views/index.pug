@@ -1,0 +1,111 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        h3 EchoPub
+        .row
+            .col-md-3
+                .list-group#chatbots-navigation
+                    a.list-group-item.list-group-item-action(href="#create-bot") Create Chatbot
+                    a.list-group-item.list-group-item-action(href="#monitoring") Monitoring
+                    a.list-group-item.list-group-item-action(href="#settings") Global Settings
+                    a.list-group-item.list-group-item-action(href="#logs") Logs
+                    a.list-group-item.list-group-item-action(href="#analytics") Analytics
+                    hr
+                    h5 Chatbots
+                    .list-group#chatbots-list
+
+            .col-md-9#chatbots-content
+                #create-bot.card
+                    .card-header Create Chatbot
+                    .card-body
+                        form#create-bot-form
+                            .form-group
+                                label(for="bot-name") Name
+                                input#bot-name.form-control(type="text")
+                            .form-group
+                                label(for="bot-api") API Endpoint
+                                input#bot-api.form-control(type="text")
+                            .form-group
+                                label(for="bot-websocket") Websocket Endpoint
+                                input#bot-websocket.form-control(type="text")
+                            button.btn.btn-primary(type="submit") Create
+
+                #monitoring.card
+                    .card-header Monitoring
+                    .card-body
+                        table#monitoring-table.table
+                            thead
+                                tr
+                                    th Name
+                                    th API Status
+                                    th Websocket Status
+                                    th Actions
+                            tbody
+
+                #settings.card
+                    .card-header Global Settings
+                    .card-body
+                        form#global-settings-form
+                            .form-group
+                                label(for="global-api") Global API Endpoint
+                                input#global-api.form-control(type="text")
+                            .form-group
+                                label(for="global-websocket") Global Websocket Endpoint
+                                input#global-websocket.form-control(type="text")
+                            button.btn.btn-primary(type="submit") Save
+
+                #logs.card
+                    .card-header Logs
+                    .card-body
+                        pre#logs-container
+                            code#logs
+                                // Logs content here
+
+                #analytics.card
+                    .card-header Analytics
+                    .card-body
+                        canvas#analytics-chart
+
+    script.
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatbotsList = document.getElementById('chatbots-list');
+            const monitoringTable = document.getElementById('monitoring-table');
+
+            // Dummy data
+            const chatbots = [
+                { name: 'Support Bot', apiStatus: 'Online', websocketStatus: 'Connected' },
+                { name: 'Sales Bot', apiStatus: 'Online', websocketStatus: 'Disconnected' },
+                { name: 'HR Bot', apiStatus: 'Offline', websocketStatus: 'Connected' }
+            ];
+
+            // Append chatbots to navigation and monitoring table
+            chatbots.forEach(chatbot => {
+                const navItem = document.createElement('a');
+                navItem.className = 'list-group-item list-group-item-action';
+                navItem.href = `#chatbot-${chatbot.name}`;
+                navItem.innerText = chatbot.name;
+                chatbotsList.appendChild(navItem);
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${chatbot.name}</td>
+                    <td>${chatbot.apiStatus}</td>
+                    <td>${chatbot.websocketStatus}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm">Edit</button>
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                `;
+                monitoringTable.querySelector('tbody').appendChild(row);
+            });
+
+            // Example log data
+            document.getElementById('logs').innerText = `
+                [INFO] Support Bot connected to API
+                [WARN] Sales Bot disconnected from Websocket
+                [ERROR] HR Bot failed to connect to API
+            `;
+
+            // You can further add logic to handle forms, add analytics charts using chart libraries, etc.
+        });

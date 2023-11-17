@@ -1,0 +1,71 @@
+.card.mb-3
+    .card-header.bg-primary.fw
+        i.fa.fa-list-alt.mr-2
+        | Template Blocks
+    .card-body.bg-light#blocksContainer(style="height: 77vh; overflow-y: auto; padding-top: 0px!important;")
+        each block in template.inputs
+            - let bgClass = ''
+            case block.block.type
+                when 'text'
+                    - bgClass = 'bg-primary fw'
+                when 'userInput'
+                    - bgClass = 'bg-success fw'
+                when 'data'
+                    - bgClass = 'bg-warning fw'
+                when 'dependency'
+                    - bgClass = 'bg-info'
+                when 'file'
+                    - bgClass = 'bg-secondary fw'
+            .blockCard.card.mt-3(data-block-id=block.block._id)
+                .card-header(class=`${bgClass}`, data-toggle='collapse', data-target=`#blockContentCollapse${block.block._id}`)
+                    button.btn.btn-info.mr-2= block.order
+                    strong #{block.block.name ? block.block.name : 'Block'}
+                    button.moveButton.btn.btn-sm.btn-primary.ml-2.float-right(data-action="moveUp")
+                        i.fa.fa-arrow-up
+                    button.moveButton.btn.btn-sm.btn-primary.ml-2.float-right(data-action="moveDown")
+                        i.fa.fa-arrow-down
+                .collapse(id=`blockContentCollapse${block.block._id}`)
+                    .card-body
+                        span.btn.btn-light.float-right.mb-2 #{block.block.type ? block.block.type : ''}
+                        case block.block.type
+                            when 'text'
+                                .form-group
+                                    label(for=`blockName_${block.block._id}`) Block Name:
+                                    input#blockName.form-control(type="text", name=`blockName_${block.block._id}`, value=block.block.name)
+                                .form-group
+                                    label(for=`blockBody_${block.block._id}`) Block Body:
+                                    textarea(rows='12').blockText.form-control(name=`blockBody_${block.block._id}`)= block.block.body
+                            when 'data'
+                                .form-group
+                                    label Select Data Object
+                                    select.dataObjectSelector.form-control
+                                        each dataObject in dataObjects || []
+                                            option(value=dataObject.name)= dataObject.name
+                            when 'dependency'
+                                p Dependencies are set in the Job editor.
+                            when 'file'
+                                .form-group
+                                    label Select File
+                                    select.filePicker.form-control
+                                        each file in files || []
+                                            option(value=file.name)= file.name
+                            when 'userInput'
+                                .form-group
+                                    label User Input Format
+                                    .formBuilder
+                                        each pair in block.block.userInputFormat || []
+                                            .inputPair
+                                                input.form-control(type="text", placeholder="Key", value=pair.key)
+                                                input.form-control(type="text", placeholder="Value", value=pair.value)
+                        .form-group
+                            label Tags
+                            .input-group
+                                input.form-control(type='text', name='tag', id='editorTag')
+                                .input-group-append
+                                    button.btn.btn-primary.ml-2(id='addTag')
+                                        i.fa.fa-plus
+                        .badge-container#editorTags
+                        .d-flex.justify-content-end
+                            button.btn.btn-sm.btn-success.ml-2 Save
+                            button.deleteButton.btn.btn-sm.btn-danger.ml-2
+                                i.fa.fa-trash-alt

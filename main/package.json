@@ -1,0 +1,66 @@
+{
+    "name": "bengine",
+    "version": "0.0.1",
+    "description": "B Engine - Integrated Automation for Generatie AI",
+    "main": "app.js",
+    "license": "GPL-3.0",
+    "licenses": [
+        {
+            "type": "GPL-3.0",
+            "url": "https://opensource.org/licenses/GPL-3.0"
+        }
+    ],
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^6.4.0",
+        "archiver": "^5.3.1",
+        "bcrypt": "^5.1.0",
+        "body-parser": "^1.17.2",
+        "bootstrap": "^4.4.2",
+        "chart.js": "^4.3.0",
+        "cheerio": "^1.0.0-rc.12",
+        "compression": "^1.7.4",
+        "connect-flash": "^0.1.1",
+        "connect-mongo": "^3.2.0",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "csv-parser": "^3.0.0",
+        "datatables.net": "^1.13.4",
+        "dotenv": "^16.0.3",
+        "express": "^4.16.3",
+        "express-rate-limit": "^6.7.0",
+        "express-session": "^1.17.3",
+        "fetch": "^1.1.0",
+        "helmet": "^7.0.0",
+        "jquery": "^3.7.0",
+        "lodash": "^4.17.21",
+        "lusca": "^1.7.0",
+        "moment": "^2.29.4",
+        "mongo-sanitize": "^1.1.0",
+        "mongoose": "^5.9.5",
+        "morgan": "^1.10.0",
+        "multer": "^1.4.5-lts.1",
+        "node-fetch": "^3.3.0",
+        "openai": "^3.1.0",
+        "passport": "^0.6.0",
+        "passport-local": "^1.0.0",
+        "popper.js": "^1.16.1",
+        "prettier": "^2.8.7",
+        "pug": "^3.0.2",
+        "simple-git": "^3.18.0",
+        "sitemapper": "^3.2.6",
+        "socket.io": "^4.6.1",
+        "unsplash-js": "^7.0.15",
+        "unzipper": "^0.10.14",
+        "winston": "^3.8.2",
+        "xml2js": "^0.4.23",
+        "yamljs": "^0.3.0"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.4",
+        "prettier-plugin-pug": "^1.0.0-alpha.8"
+    },
+    "scripts": {
+        "dev": "nodemon app.js",
+        "start": "node app.js"
+    }
+}

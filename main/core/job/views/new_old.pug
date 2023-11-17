@@ -1,0 +1,107 @@
+extends ../../../common/_layout
+include ../../../common/mixins/service.pug
+
+block content
+    .container
+        .row
+            .col-md-12
+                .card
+                    .card-header.bg-primary.fw
+                        h4 Create New Job
+                    .card-body
+                            +service-info(service)
+                            .card.mt-4
+                                .card-header
+                                    .row
+                                        .col-md-12
+                                            label Template:&nbsp;&nbsp;
+                                            span#selectedTemplate
+                                .card-body
+                                    .row
+                                        .col-md-3
+                                            .card.mt-4
+                                                .card-header
+                                                    h6 Templates
+                                                .card-body(style="height: 18vh; overflow-y: scroll;")
+                                                    ul.list-group.bg-dark#templateGroupList(data-model="Template")
+                                                    p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                                        .col-md-9
+                                            .card.mt-4
+                                                .card-body#templateList(style="height: 23vh; overflow-y: scroll;")
+                                                    ul.list-group.bg-dark(style="cursor: pointer;")
+                                                        each t in templates
+                                                            li.list-group-item(data-id=t._id, onclick='selectTemplate(this.dataset.id)')= t.name
+
+                                    .row
+                                        .col-md-3
+                                            .card.mt-4
+                                                .card-header
+                                                    h6 Data
+                                                .card-body(style="height: 18vh; overflow-y: scroll;")
+                                                    ul.list-group#groupList(data-model="Data")
+                                                    p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                                        .col-md-9
+                                            .card.mt-4
+                                                .card-body(style="height: 23vh; overflow-y: scroll;")
+                                                    if data.length >= 1
+                                                        ul.list-group
+                                                            each d in data
+                                                                .form-check
+                                                                    input.form-check-input(type="checkbox" id=`data-${d._id}` name="data[]" value=`${d._id}`)
+                                                                    label.form-check-label(for=`data-${d._id}`)= d.name
+                            .card.mt-4
+                                .card-header
+                                    h4 Dependencies
+                                .card-body(style="max-height: 22vh; overflow-y: scroll;")
+                                    if dependencies.length >= 1
+                                        ul.list-group
+                                            each d in dependencies
+                                                .form-check
+                                                    input.form-check-input(type="checkbox" id=`dependencies-${d._id}` name="dependencies[]" value=`${d._id}`)
+                                                    label.form-check-label(for=`dependencies-${d._id}`)= d.name
+
+                            form(action=`/job/create/${flow_id}` method="post")#jobForm
+                                input(type="hidden", id="template_id", name="template_id")
+                                .form-row
+                                    .form-group.col-md-6
+                                        label(for="filename") Filename
+                                        .input-group
+                                            .input-group-prepend
+                                                span.input-group-text
+                                                    i.fas.fa-file
+                                            input.form-control(type="text" id="filename" name="filename" placeholder="Enter filename")
+                                    .form-group.col-md-6
+                                        label(for="isFlowOutput") Is Flow Output
+                                                    .form-check
+                                                        input.form-check-input(type="radio" id="isFlowOutputYes" name="flow_output" value="true")
+                                                        label.form-check-label(for="isFlowOutputYes") Yes
+                                                    .form-check
+                                                        input.form-check-input(type="radio" id="isFlowOutputNo" name="flow_output" value="false" checked)
+                                                        label.form-check-label(for="isFlowOutputNo") No
+
+                            .card.mt-4
+                                .card-header
+                                    h4 Loops
+                                .card-body
+                                    .form-row
+                                        .form-group.col-md-6
+                                            label(for="loops") Loop Job?
+                                            .form-check
+                                                input.form-check-input(type="radio" name="loop" id="yes" value="true")
+                                                label.form-check-label(for="yes") Yes
+                                            .form-check
+                                                input.form-check-input(type="radio" name="loop" id="no" value="false" checked)
+                                                label.form-check-label(for="no") No
+                                        .form-group.col-md-6
+                                            .input-group
+                                                .input-group-prepend
+                                                    span.input-group-text
+                                                        i.fas.fa-redo-alt
+                                                input.form-control(type="number" id="loops" name="loops" placeholder="Number of loops")
+                            .text-center.mt-4
+                                hr
+                                input.form-control(type='hidden', name='service_id', value=service._id)
+                                input.form-control(type='hidden', name='template_id', id='template_id')
+                                button.btn.btn-success.btn-lg(type="submit") Create Job
+
+    include ./misc/js.pug

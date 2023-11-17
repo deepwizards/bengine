@@ -1,0 +1,31 @@
+.card.mb-3
+    .card-header.bg-primary.fw
+        a.btn.btn-success.btn-lg.float-right.ml-3(data-toggle='modal', data-target='#testDetailsModal' style="color: #fff!important;")
+            i.fa.fa-play.mr-2
+            | Test Mode
+        h4.mb-0 Template Editor
+    .card-body
+        .row
+            .col-md-3
+                h5.fw=`Name: ${template.name}`
+            .col-md-3
+                h5.fw=`Service: ${template.service.name}`
+            .col-md-6
+                if template.is_locked === true
+                    a.btn.btn-success.btn-sm.float-right.ml-3#unlockButton
+                        i.fa.fa-unlock.mr-2
+                        | Unlock Template
+                else
+                    a.btn.btn-danger.btn-sm.float-right.ml-3#lockButton
+                        i.fa.fa-lock.mr-2
+                        | Lock Template
+                a.btn.btn-primary.btn-sm.float-right.ml-3#saveVersionButton
+                    i.fas.fa-save.mr-2
+                    | Save Version
+                a.btn.btn-info.btn-sm.float-right.ml-3(data-toggle='modal', data-target='#loadVersionModal')#loadVersionButton
+                    i.fas.fa-upload.mr-2
+                    | Load Version
+                    //- button#testServiceButton.btn.btn-success.btn-large(type="button" data-id=template._id)
+                        i.fa.fa-play.mr-2
+                        | Test Mode
+                    

@@ -1,0 +1,77 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        .row
+            .col-md-3
+                .card.mt-4
+                    .card-header.bg-primary.fw
+                        h4 Data
+                    .card-body
+                        ul#groupList.list-group
+                        p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                    .card-footer.text-center
+                        a.btn.btn-primary(href='/group')
+                            i.fas.fa-cogs
+                            span.ml-2 Manage Groups
+            .col-md-9
+                .card.mt-4
+                    .card-body
+                        table#dataTable.table.table(data-items=JSON.stringify(items))
+                            colgroup
+                                col(style="min-width: 300px;")
+                                col
+                                col
+                            thead
+                                tr
+                                    th Name
+                                    th Description
+                                    th
+                            tbody
+                                for item in items
+                                    tr
+                                        td= item.name
+                                        td= item.description
+                                        td
+                                            div.btn-group(role='group')
+                                                a.btn.btn-info.btn-sm(href='/data/' + item._id)
+                                                    i.fas.fa-search
+                                                    | View Data
+                                                a.btn.btn-dark.btn-sm(href='/data/edit/' + item._id)
+                                                    i.fas.fa-edit
+                                                form(action='/data/delete/' + item._id, method='POST', style='display:inline')
+                                                    button.btn.btn-danger.btn-sm(type='submit')
+                                                        i.fas.fa-trash-alt
+                    .card-footer
+                        a.btn.btn-primary(href='/data/new') Add New Data
+
+
+    script(src='/static/js/group.js' defer)
+    script.
+        function renderItemRowData(item) {
+            return `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.description}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-info btn-sm" href="/data/${item._id}">
+                                <i class="fas fa-search"></i> View Data
+                            </a>
+                            <a class="btn btn-dark btn-sm" href="/data/edit/${item._id}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="/data/delete/${item._id}" method="POST" style="display:inline">
+                                <button class="btn btn-danger btn-sm" type="submit">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+    script.
+        window.groupModuleLoaded = function() {
+            initGroupModule('Data', 'groupList', renderItemRowData);
+        };

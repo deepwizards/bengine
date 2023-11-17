@@ -1,0 +1,119 @@
+extends ../../../common/_layout
+include ../../../common/mixins/badge.pug
+
+block content
+    .container-fluid
+        .row
+            .col-md-12
+                .card
+                    .card-body
+                        a.btn.btn-primary(href='/project/new') Add New Project
+
+            .col-md-3
+                .card.mt-4
+                    .card-header.bg-primary.fw
+                        h4 Projects
+                    .card-body
+                        ul#groupList.list-group(data-filter-target="#projectCards .card")
+                        p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                    .card-footer.text-center
+                        a.btn.btn-primary(href='/group')
+                            i.fas.fa-cogs
+                            span.ml-2 Manage Groups
+
+            .col-md-9
+                .mt-4
+                    .row#projectCards
+                        each item in items
+                            .col-md-4.col-lg-3.mb-4
+                                a(href='/project/' + item._id, data-group-id=item.groupId)
+                                    .card    
+                                        .card-header
+                                            h5.card-title= item.name
+                                                span.float-right
+                                                    +status-badge(item.status)
+                                        .card-body
+                                            p.card-text= item.description
+                                            .row.text-center.fw
+                                                .col-md-12.mb-3
+                                                    .card.h-100
+                                                        .card-body.bg-primary.pt-5
+                                                            i.fa.fa-file-alt.fa-4x
+                                                            h5.card-title.fw.mt-5 Outputs: #{item.outputs.length}
+                                                .col-md-4.mb-3
+                                                    .card.h-100
+                                                        .card-body.pt-5
+                                                            i.fa.fa-sitemap.fa-4x
+                                                            h5.card-title.fw.mt-5 Flows: #{item.flows.length}
+                                                .col-md-4.mb-3
+                                                    .card.h-100
+                                                        .card-body.bg-success.pt-5
+                                                            i.fa.fa-check-circle.fa-4x
+                                                            p.card-title.fw.mt-5 Completed: #{item.flows.filter(flow => flow && flow.status === 'complete').length}
+                                                .col-md-4.mb-3
+                                                    .card.h-100
+                                                        .card-body.bg-info.pt-5
+                                                            i.fa.fa-hourglass-half.fa-4x
+                                                            p.card-title.fw.mt-5 Pending: #{item.flows.filter(flow => flow && flow.status !== 'complete').length}
+                                            a.btn.btn-info(href=`/project/${item._id}/outputs`)
+                                                i.fa.fa-external-link-alt
+                                                span.ml-2 View Outputs
+
+                                        .card-footer
+                                            .btn-group(role='group').float-right
+                                                a.btn.btn-primary.btn-sm.mr-1(href='/project/' + item._id)
+                                                    i.fas.fa-search
+                                                a.btn.btn-secondary.btn-sm.mr-1(href='/project/edit/' + item._id)
+                                                    i.fas.fa-edit
+                                                form(method="POST", action=`/project/duplicate/${item._id}`, style="display: inline;")
+                                                    input(type="hidden", name="project_id", value=`${item._id}`)
+                                                    button.btn.btn-secondary.btn-sm.mr-1(type="submit")
+                                                        i.fas.fa-copy
+                                                form(action='/project/delete/' + item._id, method='POST', style='display:inline')
+                                                    button.btn.btn-danger.btn-sm(type='submit')
+                                                        i.fas.fa-trash-alt
+                
+
+    script(src='/static/js/group.js' defer)
+    script.
+         // projectFilter.js
+
+        document.addEventListener("DOMContentLoaded", () => {
+        const groupList = document.querySelector("#groupList");
+        if (groupList) {
+            groupList.addEventListener("click", (event) => {
+            if (event.target.tagName === "LI") {
+                const selectedGroupId = event.target.getAttribute("data-group-id");
+                applyGroupFilter(selectedGroupId);
+            }
+            });
+        }
+        });
+
+        function applyGroupFilter(selectedGroupId) {
+        const cards = document.querySelectorAll("#projectCards .card");
+        cards.forEach((card) => {
+            const cardGroupId = card.getAttribute("data-group-id");
+            if (selectedGroupId === "all" || cardGroupId === selectedGroupId) {
+            card.style.display = "block";
+            } else {
+            card.style.display = "none";
+            }
+        });
+        }
+
+        function applyGroupFilter(selectedGroupId) {
+            const cards = document.querySelectorAll('#projectCards .card');
+            cards.forEach(card => {
+                const cardGroupId = card.getAttribute('data-group-id');
+                if (selectedGroupId === 'all' || cardGroupId === selectedGroupId) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        window.groupModuleLoaded = function() {
+            initGroupModule('Project', 'groupList', null, applyGroupFilter);
+        };

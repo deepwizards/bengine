@@ -1,0 +1,44 @@
+.row
+    //- .col-md-12
+    //-     .card
+    //-         .card-header Block Tags
+    //-         .card-body
+    //-             .badge-container
+    //-                 if block && block.tags
+    //-                     each tag in block.tags
+    //-                         span.badge.badge-primary.mr-2
+    //-                             i.fa.fa-times.ml-2
+    //-                             = tag.name
+    .col-md-12
+        .card
+            .card-header
+                i.fa.fa-list-alt.mr-2
+                | New Block
+                .d-flex.align-items-center.mt-2
+                    select#blockTypeSelector.form-control.mr-2
+                        option(value="text") Text Block
+                        option(value="userInput") User Input
+                        option(value="data") Data
+                        option(value="dependency") Dependency
+                        option(value="file") File
+                    button#addBlockButton.btn.btn-success Block+
+            .card-body
+                .row
+                    .col-md-12
+                        table.table#dataTable.tagTable(style="margin-bottom: 0;")
+                            thead.bg-primary.fw
+                                    tr
+                                        th Name
+                                        //- th Type
+                                        th Tags
+                            tbody
+                                    each block in blocks
+                                        tr(data-block-id=block._id, data-block-body=block.body)
+                                            td #{block.name}
+                                            //- td.text-center #{block.type}
+                                            td
+                                                if block.tags
+                                                    each tag in block.tags
+                                                        span.badge.badge-primary.m-1 #{tag.toString()}
+                        button#useSelectedBlockButton.btn.btn-success.btn-lg.float-right Copy Block+
+                        button#useSelectedBlockButton.btn.btn-info.btn-lg.float-right Link Block+

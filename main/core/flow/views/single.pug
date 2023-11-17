@@ -1,0 +1,292 @@
+extends ../../../common/_layout
+include ../../../common/mixins/badge.pug
+
+block content
+    .container-fluid
+        .row
+            .col-md-9
+                .card.mt-4
+                    .card-header.d-flex.align-items-center.bg-primary.fw
+                        h4.mr-auto=`FLOW: ${flow.name}`
+                        +status-badge-lg(flow.status)
+                    .card-body
+                        .row.pl-2
+                            .col-md-7
+                                p= flow.description
+                            .col-md-5
+                                a.btn.btn-success.mr-2(href=`/flow/activate/${flow._id}` data-toggle="tooltip" data-placement="top" title="Activate this flow.")
+                                    i.fas.fa-play
+                                button.btn.btn-secondary.mr-2(type="button" data-toggle="modal" data-target="#editFlowModal")
+                                    span(data-toggle="tooltip" data-placement="top" title="Edit this flow.")
+                                        i.fas.fa-edit
+                                form(method="POST", action=`/flow/duplicate/${flow._id}`, style="display: inline;" data-toggle="tooltip" data-placement="top" title="Duplicate this flow.")
+                                    input(type="hidden", name="flow_id", value=`${flow._id}`)
+                                    button.btn.btn-secondary.mr-2(type="submit")
+                                        i.fas.fa-copy
+                                button.btn.btn-secondary.mr-2(type='button' data-toggle='modal' data-target='#replaceDataModal')
+                                    span(data-toggle="tooltip" data-placement="top" title="Replace flow data.")
+                                        i.fas.fa-exchange-alt
+                                    | &nbsp; Data
+                                button.btn.btn-secondary.mr-2(type='button' data-toggle='modal' data-target='#replaceDependenciesModal')
+                                    span(data-toggle="tooltip" data-placement="top" title="Replace flow dependencies.")
+                                        i.fas.fa-exchange-alt
+                                    | &nbsp; Deps
+                                form(method="POST", action=`/flow/update/${flow._id}`, style="display: inline;" data-toggle="tooltip" data-placement="top" title="Cancel this flow.")
+                                    input(type="hidden", name="action", value="cancel")
+                                    input(type="hidden", name="flow_id", value=`${flow._id}`)
+                                    button.btn.btn-danger.mr-2(type="submit")
+                                        i.fas.fa-ban
+                                a.btn.btn-danger(href=`/flow/delete/${flow._id}` data-toggle="tooltip" data-placement="top" title="Delete this flow.")
+                                    i.fas.fa-trash
+
+
+                            //- .col.md-6
+                            //-     .card
+                            //-         .card-header
+                            //-             h5 Run Status
+                            //-         .card-body.text-center
+                            //-             p No Flow Runs Yet...
+                            
+                .card.mt-2
+                    .card-header.d-flex.align-items-center
+                        h4.mr-auto JOBS
+                    .card-body
+                        if jobs
+                            table.table#dataTable
+                                thead
+                                    tr
+                                        th Job Name
+                                        th Type
+                                        th Status
+                                        th Deps
+                                        th Loops
+                                        th Actions
+                                tbody
+                                    each job in jobs
+                                        tr
+                                            td= job.name
+                                            td
+                                                //- span.btn.btn-outline-primary= `${job.service.api}${job.service.endpoint}`
+                                            td
+                                                +status-badge(job.status)
+                                            td.text-center= job.dependencies ? job.dependencies.length : "None"
+                                            td.text-center= job.loops ? job.loops : "None"
+                                            td
+                                                a.btn.btn-sm.btn-primary.mr-1(href=`/job/${job._id}?flow_id=${flow._id}` data-toggle="tooltip" data-placement="top" title="View job details.")
+                                                    i.fas.fa-search
+                                                a.btn.btn-sm.btn-secondary.mr-1(href=`/job/edit/${job._id}?flow_id=${flow._id}` data-toggle="tooltip" data-placement="top" title="Edit job.")
+                                                    i.fas.fa-edit
+                                                form(method="POST", action=`/job/duplicate/${job._id}`, style="display: inline;")
+                                                    input(type="hidden", name="flow_id", value=`${flow._id}`)
+                                                    button.btn.btn-sm.btn-secondary.mr-1(type="submit" data-toggle="tooltip" data-placement="top" title="Duplicate job.")
+                                                        i.fas.fa-copy
+                                                form(method="POST", action=`/job/update/${job._id}`, style="display: inline;")
+                                                    input(type="hidden", name="action", value="rerun")
+                                                    input(type="hidden", name="flow_id", value=`${flow._id}`)
+                                                    button.btn.btn-sm.btn-success.mr-1(type="submit" data-toggle="tooltip" data-placement="top" title="Rerun job.")
+                                                        i.fas.fa-redo
+                                                form(method="POST", action=`/job/update/${job._id}`, style="display: inline;")
+                                                    input(type="hidden", name="action", value="cancel")
+                                                    input(type="hidden", name="flow_id", value=`${flow._id}`)
+                                                    button.btn.btn-sm.btn-danger.mr-1(type="submit" data-toggle="tooltip" data-placement="top" title="Cancel job.")
+                                                        i.fas.fa-ban
+                                                a.btn.btn-sm.btn-danger(href=`/job/delete/${job._id}?flow_id=${flow._id}` data-toggle="tooltip" data-placement="top" title="Delete job.")
+                                                    i.fas.fa-trash
+
+
+
+                        hr
+                        button.btn.btn-success(type="button" data-toggle="modal" data-target="#jobModal")
+                            span(data-toggle="tooltip" data-placement="top" title="Add a new job to this flow.")
+                                i.fas.fa-plus
+                                | &nbsp;Add New Job
+            
+            .col-md-3
+                .card.mt-4
+                    .card-header
+                        h5 Outputs
+                    .card-body(style="max-height: 18vh; overflow-y: scroll;")
+                        if outputs.length >= 1
+                            ul
+                            each output in outputs
+                                li
+                                    a(href=`/output/${output._id}`)= output._id
+                        else
+                            p.text-center.mt-4 No Outputs Yet...
+                    .card-footer.text-center
+                        i.fas.fa-download
+                        | &nbsp;Download
+                        br
+                        button.btn.btn-primary.mt-2.mr-2(onclick=`window.location.href='/flow/downloadOutputs/${flow._id}'` data-toggle="tooltip" data-placement="top" title="Download all output files.")
+                            i.fas.fa-list
+                            | &nbsp; Multi Files
+                        button.btn.btn-primary.mt-2(onclick=`window.location.href='/flow/mergeOutputs/${flow._id}'` data-toggle="tooltip" data-placement="top" title="Merge all output files into one.")
+                            i.fas.fa-file
+                            | &nbsp; Single File
+
+                        //- button.btn.btn-primary(onclick=`window.location.href='/flow/downloadOutputs/${flow._id}'`) Download All Files
+                        //- button.btn.btn-primary(onclick=`window.location.href='/flow/mergeOutputs/${flow._id}'`) Merge to File
+
+                        
+                .card.mt-2
+                    .card-header
+                        h5 Flow Details
+                    .card-body
+                        p Flow ID: #{flow._id}
+                        p Created At: #{moment(flow.createdAt).format('MMMM Do YY, h:mm')}
+                        p Updated At: #{moment(flow.updatedAt).format('MMMM Do YY, h:mm')}
+                //- .card.mt-2
+                //-     .card-header
+                //-         h5 Flow Statistics
+                //-     .card-body
+                        //- p Cost of each job: #{job.cost}
+                        //- p Character count: #{job.characterCount}
+                        //- p Token count: #{job.tokenCount}
+                        //- p Cost of Flow: #{flow.totalCost}
+                        //- p Number of jobs: #{flow.jobsCount}    
+
+
+    #jobModal.modal.fade(tabindex="-1" role="dialog")
+        .modal-dialog(role="document")
+            .modal-content
+                .modal-header
+                    h5.modal-title Job Selection
+                    button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        span(aria-hidden="true") &times;
+                .modal-body
+                    .row
+                        each service in services
+                            .col-md-4
+                                a(href=`/job/new?flow_id=${flow._id}&service_id=${service._id}`)
+                                    .card.mb-3
+                                        .card-body
+                                            h5.card-title= service.name
+                                            i(class=`fas fa-3x fa-${service.icon}`)
+    
+
+    #replaceDataModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='replaceModalLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#replaceModalLabel.modal-title Replace Data
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                form(method='POST' action='/flow/replace/data/' + flow._id)
+                    .modal-body
+                        .form-group
+                            label(for='oldDataId') Old Data ID
+                            select#oldDataId.form-control(name='oldId', required=true)
+                                each datum in data
+                                    option(value=datum._id) #{datum.name}
+                        .form-group
+                            label(for='newDataId') New Data ID
+                            select#newDataId.form-control(name='newId', required=true)
+                                each datum in allData
+                                    option(value=datum._id) #{datum.name}
+                        hr
+                    .modal-footer
+                        button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                        button.btn.btn-primary(type='submit') Save changes
+
+    #replaceDependenciesModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='replaceModalLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#replaceModalLabel.modal-title Replace Dependencies
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                form(method='POST' action='/flow/replace/dependencies/' + flow._id)
+                    .modal-body
+                        .form-group
+                            label(for='oldDependencyId') Old Dependency ID
+                            select#oldDependencyId.form-control(name='oldId', required=true)
+                                each dependency in dependencies
+                                    option(value=dependency._id) #{dependency.name}
+                        .form-group
+                            label(for='newDependencyId') New Dependency ID
+                            select#newDependencyId.form-control(name='newId', required=true)
+                                each dependency in allDeps
+                                    option(value=dependency._id) #{dependency.name}
+                        hr
+                    .modal-footer
+                        button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                        button.btn.btn-primary(type='submit') Save changes
+
+    #editFlowModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="editFlowModalLabel" aria-hidden="true")
+        .modal-dialog(role="document")
+            .modal-content(style="width: 800px;")
+                .modal-header
+                    h5#editFlowModalLabel.modal-title Edit Flow
+                    button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        span(aria-hidden="true") &times;
+                .modal-body
+                    form#editFlowForm
+                        .form-group
+                            label(for="name") Name
+                            input#name.form-control(type="text" placeholder="Enter name")
+                        .form-group
+                            label(for="description") Description
+                            textarea#description.form-control(style="min-height: 100px;" placeholder="Enter description")
+                        .form-row
+                            .form-group.col-md-6
+                                label(for="filename") Filename
+                                .input-group
+                                    .input-group-prepend
+                                        span.input-group-text
+                                            i.fas.fa-file
+                                    input.form-control(type="text" id="filename" name="filename" placeholder="Enter filename")
+                            .form-group.col-md-6
+                                label(for="isFlowOutput") Is Flow Output
+                                .form-check
+                                    input.form-check-input(type="radio" id="isFlowOutputYes" name="flow_output" value="true")
+                                    label.form-check-label(for="isFlowOutputYes") Yes
+                                .form-check
+                                    input.form-check-input(type="radio" id="isFlowOutputNo" name="flow_output" value="false" checked)
+                                    label.form-check-label(for="isFlowOutputNo") No
+                            
+                        .card.mt-4
+                            .card-header
+                                h4 Loops
+                            .card-body
+                                .form-row
+                                    .form-group.col-md-6
+                                        label(for="loops") Loop Job?
+                                        .form-check
+                                            input.form-check-input(type="radio" name="loops" id="yes" value="yes")
+                                            label.form-check-label(for="yes") Yes
+                                        .form-check
+                                            input.form-check-input(type="radio" name="loops" id="no" value="no")
+                                            label.form-check-label(for="no") No
+                                    .form-group.col-md-6
+                                        .input-group
+                                            .input-group-prepend
+                                                span.input-group-text
+                                                    i.fas.fa-redo-alt
+                                            input.form-control(type="number" id="numLoops" name="numLoops" placeholder="Number of loops")
+                        hr
+                        .card.mt-4
+                            .card-header
+                                h4 Dependencies
+                            .card-body(style="max-height: 22vh; overflow-y: scroll;")
+                                .row
+                                    .col-md-12
+                                        if allFlowDeps.length >= 1
+                                            - const flowDepsIds = flowDeps[0].dependencies.map(dep => dep._id.toString())
+                                            ul.list-group
+                                                each d in allFlowDeps
+                                                    .form-check
+                                                        - const isChecked = flowDepsIds.includes(d._id.toString()) ? 'checked' : ''
+                                                        input.form-check-input(type="checkbox" id=`dependencies-${d._id}` name="dependencies[]" value=`${d._id}` checked=isChecked)
+                                                        label.form-check-label(for=`dependencies-${d._id}`)= d.name
+                                    //- .col-md-3
+                                    //-     .card.mt-4
+                                    //-         .card-header
+                                    //-             h4 Groups
+                                    //-         .card-body
+                                    //-             ul#groupList.list-group
+                                    //-             p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                                    //- .col-md-9
+
+                .modal-footer
+                    button.btn.btn-secondary(type="button" data-dismiss="modal") Close
+                    button.btn.btn-primary(type="submit" form="editFlowForm") Save changes

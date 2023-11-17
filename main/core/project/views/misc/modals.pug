@@ -1,0 +1,113 @@
+
+
+#editModal.modal.fade(tabindex="-1" role="document")
+    .modal-dialog(role="document")
+        .modal-content
+            .modal-header
+                h5.modal-title Edit Project
+                button.close(type="button" data-dismiss="modal" aria-label="Close")
+                    span(aria-hidden="true") &times;
+            .modal-body
+                .card
+                        .card-header
+                            h4 Edit Project
+                        .card-body
+                            form(action='/project/update/' + project._id, method='POST')
+                                label(for='name') name
+                                input.form-control(type='text', id='name', name='name', value=project.name, required)
+                                label(for='description') description
+                                input.form-control(type='text', id='description', name='description', value=project.description)
+                                button.btn.btn-primary(type='submit') Update
+
+#jobModal.modal.fade(tabindex="-1" role="document")
+    .modal-dialog(role="document")
+        .modal-content
+            .modal-header
+                h5.modal-title Job Selection
+                button.close(type="button" data-dismiss="modal" aria-label="Close")
+                    span(aria-hidden="true") &times;
+            .modal-body
+                .row
+                    each service in services
+                        .col-md-4
+                            a.job-link(href="#" data-service-id=service._id)
+                                .card.mb-3
+                                    .card-body
+                                        h5.card-title= service.name
+                                        i(class=`fas fa-3x fa-${service.icon}`)
+
+#flowModal.modal.fade(tabindex="-1" role="dialog")
+    .modal-dialog(role="document")
+        .modal-content
+            .modal-header
+                h5.modal-title Flow Selection
+                button.close(type="button" data-dismiss="modal" aria-label="Close")
+                    span(aria-hidden="true") &times;
+            .modal-body
+                if selectFlows.length >= 1
+                    form(action='/project/update/' + project._id, method='POST')
+                        label(for="flowSelect") Select a Flow:
+                        select#flowSelect.form-control(name='selectedFlow')
+                            each flow in selectFlows
+                                option(value=`${flow._id}`)= flow.name
+                        hr
+                        button.btn.btn-primary(type='submit') Add Flow
+
+                else
+                    p No Flows Available...
+            .modal-footer
+                a.btn.btn-primary(href="/flow/new") Create New Flow
+                button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+
+#replaceDataModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='replaceModalLabel' aria-hidden='true')
+    .modal-dialog(role='document')
+        .modal-content
+            .modal-header
+                h5#replaceModalLabel.modal-title Replace Data
+                button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+            form(method='POST' action='/project/replace/data/' + project._id)
+                .modal-body
+                    .form-group
+                        label(for='oldDataId') Old Data ID
+                        select#oldDataId.form-control(name='oldId', required=true)
+                            if data
+                                each datum in data
+                                    option(value=datum._id) #{datum.name}
+                    .form-group
+                        label(for='newDataId') New Data ID
+                        select#newDataId.form-control(name='newId', required=true)
+                            if allData
+                                each datum in allData
+                                    option(value=datum._id) #{datum.name}
+                    hr
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                    button.btn.btn-primary(type='submit') Save changes
+
+#replaceDependenciesModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='replaceModalLabel' aria-hidden='true')
+    .modal-dialog(role='document')
+        .modal-content
+            .modal-header
+                h5#replaceModalLabel.modal-title Replace Dependencies
+                button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+            form(method='POST' action='/project/replace/dependencies/' + project._id)
+                .modal-body
+                    .form-group
+                        label(for='oldDependencyId') Old Dependency ID
+                        select#oldDependencyId.form-control(name='oldId', required=true)
+                            if dependencies
+                                if dependencies.length >= 1
+                                    each dependency in dependencies
+                                        option(value=dependency._id) #{dependency.name}
+                    .form-group
+                        label(for='newDependencyId') New Dependency ID
+                        select#newDependencyId.form-control(name='newId', required=true)
+                            if allDeps
+                                each dependency in allDeps
+                                    option(value=dependency._id) #{dependency.name}
+                    hr
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                    button.btn.btn-primary(type='submit') Save changes

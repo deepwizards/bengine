@@ -1,0 +1,60 @@
+extends ../../../common/_layout
+include ../../../common/mixins/service.pug
+
+block content
+    +service-info(service)
+    .container
+        .row
+            .col-md-2
+            .col-md-8
+                .card
+                    .card-header
+                        h4 Edit Job Details
+                    .card-body
+                        form(action=`/job/update/${job._id}` method="post")
+                            .form-row
+                                .form-group.col-md-8
+                                    label(for="task") Task
+                                    select.form-control(id="task" name="task_id")
+                                        each task in tasks
+                                            option(value=task._id selected=(task._id.toString()===job.task_id.toString()))= task.name
+                                .form-group.col-md-4
+                                    label(for="role") Role
+                                    select.form-control(id="role" name="role_id")
+                                        each role in roles
+                                            option(value=role._id selected=(role._id.toString()===job.role_id.toString()))= role.name
+                            .card.mt-4
+                                .card-header
+                                    h4 Data
+                                .card-body
+                                    if data.length >= 1
+                                        ul.list-group
+                                            each d in data
+                                                .form-check
+                                                    input.form-check-input(type="checkbox" id=`data-${d._id}` name="data[]" value=`${d._id}` checked=job.data.includes(d._id))
+                                                    label.form-check-label(for=`data-${d._id}`)= d.name
+                            .card.mt-4
+                                .card-header
+                                    h4 Dependencies
+                                .card-body
+                                    if dependencies.length >= 1
+                                        ul.list-group
+                                            each d in dependencies
+                                                .form-check
+                                                    input.form-check-input(type="checkbox" id=`dependencies-${d._id}` name="dependencies[]" value=`${d._id}` checked=job.dependencies.includes(d._id))
+                                                    label.form-check-label(for=`dependencies-${d._id}`)= d.name
+                            .text-center.mt-4
+                                hr
+                                .form-group
+                                    label(for="isFlowOutput") Is Flow Output
+                                    .form-check
+                                        input.form-check-input(type="radio" id="isFlowOutputYes" name="flow_output" value="true" checked=job.flow_output)
+                                        label.form-check-label(for="isFlowOutputYes") Yes
+                                    .form-check
+                                        input.form-check-input(type="radio" id="isFlowOutputNo" name="flow_output" value="false" checked=!job.flow_output)
+                                        label.form-check-label(for="isFlowOutputNo") No
+
+                                hr
+                                input.form-control(type='hidden', name='service_id', value=job.service_id)
+                                input.form-control(type='hidden', name='flow_id', value=job.flow_id)
+                                button.btn.btn-success.btn-lg(type="submit") Update Job

@@ -1,0 +1,222 @@
+extends ../../../common/_layout
+
+block content
+    .container-fluid
+        .row.text-center
+            .col-md-3
+            .col-md-6
+                form(method="POST" action=`/job/create/${flow_id}`)
+                    input(type='hidden', name='project_id', value=project_id)
+                    //- Section 1: Select Service
+                    .card.mt-4#serviceCard
+                        .card-header
+                            h4 Select Service
+                        .card-body
+                            table.table.table-hover#serviceDataTable
+                                thead
+                                    tr
+                                        th Service Name
+                                tbody
+                                    each service in services
+                                        tr(data-service-id=service._id)
+                                            td= service.name
+
+                    //- Section 2: Select Template
+                    .card.mt-4#templateCard(style='display: none;')
+                        .card-header
+                            h4 Select Template
+                        .card-body
+                            .row
+                                .col-md-6
+                                    table.table.table-hover#templateDataTable
+                                        thead
+                                            tr
+                                                th Template Name
+                                        tbody
+                                            each template in templates
+                                                tr(data-template-id=template._id data-service=template.service)
+                                                    td= template.name
+                                    p#no-templates-message(style='display: none;') No Templates for this Service
+                                    a.btn.btn-primary(style='display: none;')#manage-templates-button(href="/template") Manage Templates
+                                .col-md-6
+                                    h4 Template Preview
+                                    p lorum ipsum blah blah 
+                    //- Section 3: Add Data
+                    .card.mt-4#dataCard(style='display: none;')
+                        .card-header
+                            h4 Add Data
+                        .card-body
+                            table.table#dataTable
+                                thead
+                                    tr
+                                        th Name
+                                        th Select
+                                tbody
+                                    each datum in data
+                                        tr
+                                            td= datum.name
+                                            td
+                                                .custom-control.custom-checkbox
+                                                    input.custom-control-input(type='checkbox', name='data[]', id=`data-${datum._id}`, value=datum._id)
+                                                    label.custom-control-label(for=`data-${datum._id}`)
+
+                    //- Section 4: Add Dependencies
+                    .card.mt-4#dependenciesCard(style='display: none;')
+                        .card-header
+                            h4 Add Dependencies
+                        .card-body(style='max-height: 300px; overflow-y: auto;')
+                            table.table
+                                thead
+                                    tr
+                                        th Name
+                                        th Select
+                                tbody
+                                    each dependency in dependencies
+                                        tr
+                                            td= dependency.name
+                                            td
+                                                .custom-control.custom-checkbox
+                                                    input.custom-control-input(type='checkbox', name='dependencies[]', id=`dependency-${dependency._id}`, value=dependency._id)
+                                                    label.custom-control-label(for=`dependency-${dependency._id}`)
+
+
+
+                    //- Section 5: Loops
+                    .card.mt-4#loopsCard(style='display: none;')
+                        .card-header
+                            h4 Loops
+                        .card-body
+                            .form-group
+                                label(for='loop') Enable Looping
+                                input.custom-control-input(type='checkbox', name='loop', id='loop', value='true')
+                                label.custom-control-label(for='loop') Yes
+                            .form-group
+                                label(for='loops') Number of Loops
+                                input#loops.form-control(type='number', name='loops', value='1', min='1')
+                            .form-group
+                                label(for='loopArray') Loop Array (JSON format)
+                                textarea#loopArray.form-control(name='loop_array', placeholder='["key": "value"]')
+
+                    //- Section 6: Set as Flow / Project Output
+                    .card.mt-4#outputCard(style='display: none;')
+                        .card-header
+                            h4 Set as Flow / Project Output
+                        .card-body
+                            .form-group
+                                .custom-control.custom-checkbox
+                                    input.custom-control-input(type='checkbox', name='flow_output', id='flow_output', value='true')
+                                    label.custom-control-label(for='flow_output') Set as Flow Output
+                                .custom-control.custom-checkbox
+                                    input.custom-control-input(type='checkbox', name='project_output', id='project_output', value='true')
+                                    label.custom-control-label(for='project_output') Set as Project Output
+                                        .form-group.mt-4
+                                            button.btn.btn-primary(type='submit') Create Job
+
+
+    script.
+        $(document).ready(function() {
+            const serviceDataTable = $('#serviceDataTable').DataTable({
+                scrollY: 300,
+                scroller: true
+            });
+
+            const templateDataTable = $('#templateDataTable').DataTable({
+                scrollY: 300,
+                scroller: true
+            });
+
+            // Add hidden input for template_id inside the form
+            $('form').append('<input type="hidden" name="template_id" id="template_id" />');
+
+            // Update the template_id input value when a template row is clicked
+            templateDataTable.on('click', 'tbody tr', function() {
+                var templateId = $(this).data('template-id');
+                $('#template_id').val(templateId);
+            });
+
+
+            let selectedData = [];
+            let selectedDependencies = [];
+
+            // Function to handle row selection and show related cards
+            function handleRowSelectionAndCardDisplay(row, serviceId, templateId) {
+                const cardIds = ['#dataCard', '#dependenciesCard', '#loopsCard', '#outputCard'];
+                row.siblings().removeClass('selected');
+                row.addClass('selected');
+                if (serviceId) {
+                    $('#templateCard').show(); // Fix to ensure template card is displayed when service is selected
+                    filterTemplatesByService(serviceId);
+                }
+                if (templateId) {
+                    $('#template_id').val(templateId);
+                }
+                cardIds.forEach(id => $(id).show()); // Changed from removeClass('d-none') to show()
+            }
+
+            // Select service
+            serviceDataTable.on('click', 'tbody tr', function() {
+                handleRowSelectionAndCardDisplay($(this), $(this).data('service-id'));
+            });
+
+            // Select template
+            templateDataTable.on('click', 'tbody tr', function() {
+                handleRowSelectionAndCardDisplay($(this), null, $(this).data('template-id'));
+            });
+
+            // Filter templates by service
+            function filterTemplatesByService(serviceId) {
+                const filteredData = templateDataTable
+                    .rows()
+                    .nodes()
+                    .to$() // Convert to jQuery object for filtering
+                    .filter(function() {
+                        return $(this).data('service') == serviceId;
+                    }).toArray(); // Convert the jQuery object back to an array
+                templateDataTable.clear();
+                templateDataTable.rows.add(filteredData).draw();
+            }
+
+            // Add or remove data and dependencies
+            $('#dataCard, #dependenciesCard').on('change', 'input[type="checkbox"]', function() {
+                const type = $(this).closest('.card').attr('id').replace('Card', '');
+                const listSelector = `#selected${type.charAt(0).toUpperCase() + type.slice(1)}List`;
+                const id = $(this).data(`${type}-id`);
+                if (this.checked) {
+                    if (type === 'data') {
+                        selectedData.push(id);
+                    } else {
+                        selectedDependencies.push(id);
+                    }
+                    addToList(listSelector, id, $(this).next('label').text());
+                } else {
+                    if (type === 'data') {
+                        selectedData = selectedData.filter(dataId => dataId !== id);
+                    } else {
+                        selectedDependencies = selectedDependencies.filter(dependencyId => dependencyId !== id);
+                    }
+                    $(`${listSelector} [data-id="${id}"]`).remove();
+                }
+            });
+
+            // Add item to list
+            function addToList(listId, itemId, itemName) {
+                const listItem = $('<li>').addClass('list-group-item').text(itemName).attr('data-id', itemId);
+                const removeButton = $('<button>').addClass('btn btn-danger btn-sm float-right remove-item').text('Remove');
+                listItem.append(removeButton);
+                $(listId).append(listItem);
+            }
+
+            // Remove items
+            $('#selectedDataList, #selectedDependenciesList').on('click', '.remove-item', function() {
+                const itemId = $(this).closest('li').data('id');
+                const listId = $(this).closest('ul').attr('id');
+                $(this).closest('li').remove();
+                if (listId.includes('Data')) {
+                    selectedData = selectedData.filter(id => id !== itemId);
+                } else {
+                    selectedDependencies = selectedDependencies.filter(id => id !== itemId);
+                }
+                // Update the checkboxes status
+                $(`input[data-${listId.toLowerCase().replace('selected', '')}-id="${itemId}"]`).prop('checked', false);
+            });
+        });

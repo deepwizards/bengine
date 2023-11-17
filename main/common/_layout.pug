@@ -1,0 +1,103 @@
+doctype html
+html
+    head
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        meta(name='theme-color' content='#4DA5F4')
+        meta(name='csrf-token', content=_csrf)
+        title B E N G I N E
+        link(rel='shortcut icon', href='/static/favicon.ico')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lora:400,700&display=swap' type="text/css")
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap' type="text/css")
+        link(rel='stylesheet' href="https://fonts.googleapis.com/css?family=Prompt:300,400,500,600,700" type="text/css")
+        link(rel='stylesheet' href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,500,600,700" type="text/css")
+        link(rel='stylesheet' href="https://fonts.googleapis.com/css?family=Karla:400" type="text/css")
+        link(rel='stylesheet' href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,500,600,700" type="text/css")
+        link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+        link(rel='stylesheet' href='https://cdn.datatables.net/v/dt/dt-1.13.6/sc-2.2.0/datatables.min.css')
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css")        
+        link(rel='stylesheet', href='/static/css/main.css' type="text/css")
+        link(rel='stylesheet', href='/static/css/sidebar.css' type="text/css")
+        link(rel='stylesheet', href='/static/css/dark.css' type="text/css")
+        script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js")
+        script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+        script(src="https://cdn.datatables.net/v/dt/dt-1.13.6/sc-2.2.0/datatables.min.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js")
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js')
+        style.
+            body {
+                font-family: 'Prompt', sans-serif;
+                font-weight: '400';
+                font-size: 1rem;
+            }
+            h1, h2, h3, h4, h5, h6, .btn, label, .badge, th, .paginate_button, b, a, button {
+                font-family: 'Karla', sans-serif!important;
+                text-transform: uppercase;
+            }
+            textarea:focus, input:focus{
+                outline: none!important;
+            }
+            .modal-dialog {
+                max-width: 70%!important;
+            }
+        block head
+        body
+            .page-wrapper.chiller-theme.toggled
+                a#show-sidebar.btn.btn-sm.btn-dark(href='#', style='z-index: 9999;')
+                    | Menu &nbsp;
+                    i.fas.fa-bars
+                include _sidebar
+                main.page-content()
+                    .container-fluid
+                        if messages.error
+                            .alert.alert-danger
+                                each message in messages.error
+                                    p= message
+                        block content
+            script.
+                jQuery(function ($) {
+                    $("#dataTable").dataTable({
+                        scrollY: 600,
+                        scroller: true
+                    })                    
+                    $(".sidebar-dropdown > a").click(function() {
+                        $(".sidebar-submenu").slideUp(200);
+                        if (
+                            $(this)
+                                .parent()
+                                .hasClass("active")
+                        ) {
+                            $(".sidebar-dropdown").removeClass("active");
+                            $(this)
+                                .parent()
+                                .removeClass("active");
+                        } else {
+                            $(".sidebar-dropdown").removeClass("active");
+                            $(this)
+                                .next(".sidebar-submenu")
+                                .slideDown(200);
+                            $(this)
+                                .parent()
+                                .addClass("active");
+                        }
+                    });
+                    const sidebarState = localStorage.getItem('sidebarToggled');
+                    if (sidebarState === 'true') {
+                        $(".page-wrapper").addClass("toggled");
+                    } else {
+                        $(".page-wrapper").removeClass("toggled");
+                    }
+                    $("#close-sidebar").click(function() {
+                        $(".page-wrapper").removeClass("toggled");
+                        localStorage.setItem('sidebarToggled', false);
+                    });
+                    $("#show-sidebar").click(function() {
+                        $(".page-wrapper").addClass("toggled");
+                        localStorage.setItem('sidebarToggled', true);
+                    });
+                    $(function () {
+                        $('[data-toggle="tooltip"]').tooltip()
+                    })
+                });

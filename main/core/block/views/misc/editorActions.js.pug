@@ -1,0 +1,41 @@
+script.
+		const updateTableTags = (blockId, tags) => {
+			$(`tr[data-block-id="${blockId}"] td:last-child`).empty();
+			tags.forEach((tag) => {
+				const badge = `<span class="badge badge-primary m-1">${tag}</span>`;
+				$(`tr[data-block-id="${blockId}"] td:last-child`).append(badge);
+			});
+		};
+	
+		const saveChanges = () => {
+			const updatedBlock = {
+				name: $('#editorName').val(),
+				body: $('#editorBody').val(),
+				tags: getTagsFromEditor(),
+			};
+	
+			$.ajax({
+				url: `/block/${currentBlockId}`,
+				type: 'PUT',
+				contentType: 'application/json',
+				data: JSON.stringify(updatedBlock),
+				success: function () {
+					// Refresh the table or perform other updates
+				},
+			});
+		};
+	
+		const deleteBlock = () => {
+			$.ajax({
+				url: `/block/${currentBlockId}`,
+				type: 'DELETE',
+				success: function () {
+					// Remove the row from the table and clear the editor
+					$(`.block-row[data-block-id=${currentBlockId}]`).remove();
+					$('#editorName').val('');
+					$('#editorBody').val('');
+					$('#editorTags').empty();
+				},
+			});
+		};
+	

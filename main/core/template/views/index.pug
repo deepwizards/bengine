@@ -1,0 +1,87 @@
+extends ../../../common/_layout
+
+block content
+    .container
+        .row.mt-4
+            .col-md-3
+                .card
+                    .card-header.bg-primary.fw
+                        h4 Templates
+                    .card-body
+                        ul#groupList.list-group
+                        p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                    .card-footer.text-center
+                        a.btn.btn-primary(href='/group')
+                            i.fas.fa-cogs
+                            span.ml-2 Manage Groups
+            .col-md-9
+                .card.mb-3
+                    //- .card-header
+                    //-     i.fa.fa-list-alt.mr-2 
+                    //-     | Templates
+                    .card-body
+                        if !templates || templates.length === 0
+                            .alert.alert-warning No templates available.
+                        else
+                            table#dataTable.table
+                                thead
+                                    tr
+                                        th Name
+                                        th Description
+                                        th Status
+                                        th Service
+                                        //- th Actions
+                                tbody
+                                    each template in templates
+                                        tr(data-template-id=template._id)
+                                            td #{template.name}
+                                            td #{template.description}
+                                            td #{template.status}
+                                            td #{template.service ? template.service.name : 'N/A'}
+                                            //- td
+                                            //-     a.btn.btn-info.btn-sm(href=`/template/edit/${template._id}`)
+                                            //-         i.fa.fa-edit.mr-1 Edit
+                                            //-     a.btn.btn-danger.btn-sm(href=`/template/delete/${template._id}`)
+                                            //-         i.fa.fa-trash.mr-1 Delete
+                .mt-3
+                    a.btn.btn-primary(href="/template/new")
+                        i.fa.fa-plus.mr-2
+                        | Create New Template
+    
+    script(src='/static/js/group.js' defer)
+    script.
+        $(document).ready(function() {
+            // Attach click event using delegated event to support dynamic rows
+            $('#dataTable').on('click', 'tbody tr', function() {
+                const templateId = $(this).data('template-id');
+                window.location.href = `/template/edit/${templateId}`;
+            });
+        });
+
+        function renderItemRowData(item) {
+            return `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.description}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-info btn-sm" href="/template/${item._id}">
+                                <i class="fas fa-search"></i> View Template
+                            </a>
+                            <a class="btn btn-dark btn-sm" href="/template/edit/${item._id}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="/template/delete/${item._id}" method="POST" style="display:inline">
+                                <button class="btn btn-danger btn-sm" type="submit">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+    script.
+        window.groupModuleLoaded = function() {
+            initGroupModule('Template', 'groupList', renderItemRowData);
+        };

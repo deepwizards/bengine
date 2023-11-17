@@ -1,0 +1,74 @@
+extends ../../../common/_layout
+include ../../../common/mixins/badge.pug
+
+block content
+    .container-fluid
+        .row
+            .col-md-3
+                .card.mt-4
+                    .card-header.bg-primary.fw
+                        h4 Outputs
+                    .card-body
+                        ul#groupList.list-group
+                        p#noGroupMessage.text-center.text-muted(style='display: none;') No groups found.
+                    .card-footer.text-center
+                        a.btn.btn-primary(href='/group')
+                            i.fas.fa-cogs
+                            span.ml-2 Manage Groups
+            .col-md-9
+                .card.mt-4
+                    .card-header
+                        h4 Output
+                    .card-body
+                        table#dataTable.table.table(data-items=JSON.stringify(items))
+                            colgroup
+                                col(style="min-width: 300px;")
+                                col
+                                col
+                                col
+                            thead
+                                tr
+                                    th Job ID
+                                    th Created At
+                                    th Actions
+                            tbody
+                                for item in items
+                                    tr
+                                        td= item.job_id
+                                        td= item.created_at
+                                        td
+                                            div.btn-group(role='group')
+                                                a.btn.btn-primary.btn-sm(href='/output/' + item._id)
+                                                    i.fas.fa-search
+                                                form(action='/output/delete/' + item._id, method='POST', style='display:inline')
+                                                    button.btn.btn-danger.btn-sm(type='submit')
+                                                        i.fas.fa-trash-alt
+                    .card-footer
+                        a.btn.btn-primary(href='/output/new') Add New Output
+
+    script(src='/static/js/group.js' defer)
+    script.
+        function renderItemRowOutput(item) {
+            return `
+                <tr>
+                    <td>${item.job_id}</td>
+                    <td>${item.created_at}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-primary btn-sm" href="/output/${item._id}">
+                                <i class="fas fa-search"></i>
+                            </a>
+                            <form action="/output/delete/${item._id}" method="POST" style="display:inline">
+                                <button class="btn btn-danger btn-sm" type="submit">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        window.groupModuleLoaded = function() {
+            initGroupModule('Output', 'groupList', renderItemRowOutput);
+        };

@@ -1,0 +1,22 @@
+extends ../../../common/_layout
+
+block content
+    .container
+        .row
+            .col-md-12
+                .card.mt-4
+                    .card-header
+                        h4 Edit Data
+                    .card-body
+                        form(action='/data/update/' + item._id, method='POST')
+
+                            //- label(for='name') Name
+                            input#name.form-control(type='text', name='name', value=item.name, required)
+                            hr
+                            //- label(for='description') Description
+                            input#description.form-control(type='text', name='description', value=item.description, required)
+                            hr
+                            label(for='body') Data Body
+                            textarea#body.form-control(style='height:50vh;', type='text', name='body', required)= item.body
+                            hr
+                            button.btn.btn-primary(type='submit') Submit

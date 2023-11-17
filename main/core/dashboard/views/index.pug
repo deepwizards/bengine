@@ -1,0 +1,69 @@
+extends ../../../common/_layout
+
+block content
+    .container
+        .row.mt-2
+            .col-md-12
+                .card
+                    .card-header
+                        .d-flex.justify-content-between.align-items-center
+                            h1.mb-0 Dashboard
+                            i.fas.fa-tachometer-alt.fa-2x
+                    .card-body
+                        .card
+                            .card-header Action Buttons
+                            .card-body
+                                .row.g-3
+                                    .col-md-4
+                                        a.btn.btn-primary.btn-block(href="/project") 
+                                            i.fas.fa-project-diagram.fa-2x.d-block.mb-1
+                                            | Projects Manager
+                                            small.d-block Manage your projects
+                                    .col-md-4
+                                        a.btn.btn-secondary.btn-block(href="/group") 
+                                            i.fas.fa-database.fa-2x.d-block.mb-1
+                                            | Data Manager
+                                            small.d-block Manage your data
+                                    .col-md-4
+                                        a.btn.btn-info.btn-block(href="template") 
+                                            i.fas.fa-pen-square.fa-2x.d-block.mb-1
+                                            | Template Editor
+                                            small.d-block Edit templates
+                                .row
+                                    .col-md-4
+                                        a.btn.btn-warning.btn-block(href="/queue") 
+                                            i.fas.fa-chart-line.fa-2x.d-block.mb-1
+                                            | Activity Monitor
+                                            small.d-block Monitor activities
+                                    .col-md-4
+                                        a.btn.btn-success.btn-block(href="/settings") 
+                                            i.fas.fa-cogs.fa-2x.d-block.mb-1
+                                            | System Settings
+                                            small.d-block Configure system
+                                    .col-md-4
+                                        a.btn.btn-danger.btn-block(href="/services") 
+                                            i.fas.fa-puzzle-piece.fa-2x.d-block.mb-1
+                                            | Manage Services
+                                            small.d-block Install or Uninstall
+                        .row.mt-3
+                            .col-md-5
+                                img.img-fluid.mt-3(src="/static/img/dash.png", alt="Dashboard Image")
+                            .col-md-7
+                                .alert.alert-info
+                                    strong Welcome to the Dashboard!
+                                    p This is where you can manage all aspects of your project.
+                                .card.mt-3
+                                    .card-header Quickstart Guide
+                                    .card-body
+                                        h5.mb-2 Top 3 FAQs
+                                        ol
+                                            li How do I add a new project?
+                                            li What is the data retention policy?
+                                            li How to customize templates?
+                                        h5.mb-2 Quick Links
+                                        ul
+                                            li
+                                                a(href="https://github.com/your-project/docs") GitHub Docs
+                                            li
+                                                a(href="https://support.your-project.com") Support
+                        
