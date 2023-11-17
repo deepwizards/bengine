@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Group = require('../../db/models/Group');
 
-const schemas = ['Data', 'Output', 'Flow', 'Project', 'Job', 'Block', 'Template', 'Group', 'Service'];
+const schemas = ['Data', 'Output', 'Flow', 'Project', 'Job', 'Block', 'Template', 'Group', 'Service', 'Module'];
 
 const models = schemas.reduce((acc, schema) => {
 	try {
@@ -99,45 +99,6 @@ router.get('/all', async (req, res, next) => {
 	}
 });
 
-router.get('/treeapi', async (req, res) => {
-	try {
-		const { groups, modelsData } = await getAllGroupsAndModels();
-		const jsTreeData = [];
-		for (const { name, items } of modelsData) {
-			const allEntitiesNode = {
-				text: `All ${name}s`,
-				state: {
-					opened: false,
-					selected: false
-				},
-				children: items.map(item => ({
-					text: item.name,
-					icon: "jstree-file"
-				}))
-			};
-			jsTreeData.push(allEntitiesNode);
-		}
-		for (const group of groups) {
-			const children = group.list.map(item => ({
-				text: item.name,
-				icon: "jstree-file"
-			}));
-			jsTreeData.push({
-				text: group.name,
-				state: {
-					opened: false,
-					selected: false
-				},
-				children
-			});
-		}
-		res.json({ core: { data: jsTreeData } });
-	} catch (error) {
-		console.error('Error in /treeapi:', error);
-		res.status(500).send('Internal Server Error');
-	}
-});
-
 router.get('/:id', async (req, res, next) => {
 	try {
 		const group = await Group.findById(req.params.id);
@@ -186,7 +147,6 @@ router.post('/:groupId/remove-items', async (req, res, next) => {
 	}
 });
 
-// Error-handling middleware
 router.use((err, req, res, next) => {
 	console.error(err.stack);
 	req.flash('error', err.message);
@@ -194,51 +154,6 @@ router.use((err, req, res, next) => {
 		res.status(500).json({ error: err.message });
 	} else {
 		res.redirect('/group');
-	}
-});
-
-router.get('/tree', async (req, res) => {
-	res.render('template/views/tree', {
-		title: 'Create New Template'
-	});
-});
-
-
-router.get('/treeapi', async (req, res) => {
-	try {
-		const groups = await Group.find({ type: 'Template' }).select('name _id list');
-		const allTemplates = await Template.find().select('name _id');
-		const allTemplatesNode = {
-			text: "All Templates",
-			state: {
-				opened: false,
-				selected: false
-			},
-			children: allTemplates.map(template => ({
-				text: template.name,
-				icon: "jstree-file"
-			}))
-		};
-		const jsTreeData = [allTemplatesNode];
-		for (const group of groups) {
-			const children = allTemplates
-				.filter(template => group.list.map(String).includes(String(template._id)))
-				.map(template => ({ 
-					text: template.name,
-					icon: "jstree-file"
-				}));
-			jsTreeData.push({
-				text: group.name,
-				state: {
-					opened: false,
-					selected: false
-				},
-				children
-			});
-		}
-		res.json({ core: { data: jsTreeData } });
-	} catch (error) {
-		res.status(500).send('Internal Server Error');
 	}
 });
 

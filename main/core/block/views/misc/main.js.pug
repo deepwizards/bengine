@@ -4,9 +4,7 @@ include ./editorActions.js.pug
 script.
 	$(document).ready(function () {
 		let blocks = !{JSON.stringify(blocks)};
-		console.log(blocks)
 		let activeFilters = [];
-
 		updateTagCounts(blocks);
 
 		const toggleFilterTagActive = (tag) => {

@@ -20,7 +20,6 @@ block content
                                     each service in services
                                         tr(data-service-id=service._id)
                                             td= service.name
-
                     //- Section 2: Select Template
                     .card.mt-4#templateCard(style='display: none;')
                         .card-header
@@ -59,7 +58,6 @@ block content
                                                 .custom-control.custom-checkbox
                                                     input.custom-control-input(type='checkbox', name='data[]', id=`data-${datum._id}`, value=datum._id)
                                                     label.custom-control-label(for=`data-${datum._id}`)
-
                     //- Section 4: Add Dependencies
                     .card.mt-4#dependenciesCard(style='display: none;')
                         .card-header
@@ -78,9 +76,6 @@ block content
                                                 .custom-control.custom-checkbox
                                                     input.custom-control-input(type='checkbox', name='dependencies[]', id=`dependency-${dependency._id}`, value=dependency._id)
                                                     label.custom-control-label(for=`dependency-${dependency._id}`)
-
-
-
                     //- Section 5: Loops
                     .card.mt-4#loopsCard(style='display: none;')
                         .card-header
@@ -89,14 +84,12 @@ block content
                             .form-group
                                 label(for='loop') Enable Looping
                                 input.custom-control-input(type='checkbox', name='loop', id='loop', value='true')
-                                label.custom-control-label(for='loop') Yes
                             .form-group
                                 label(for='loops') Number of Loops
                                 input#loops.form-control(type='number', name='loops', value='1', min='1')
                             .form-group
                                 label(for='loopArray') Loop Array (JSON format)
                                 textarea#loopArray.form-control(name='loop_array', placeholder='["key": "value"]')
-
                     //- Section 6: Set as Flow / Project Output
                     .card.mt-4#outputCard(style='display: none;')
                         .card-header
@@ -112,33 +105,25 @@ block content
                                         .form-group.mt-4
                                             button.btn.btn-primary(type='submit') Create Job
 
-
     script.
         $(document).ready(function() {
             const serviceDataTable = $('#serviceDataTable').DataTable({
                 scrollY: 300,
                 scroller: true
             });
-
             const templateDataTable = $('#templateDataTable').DataTable({
                 scrollY: 300,
                 scroller: true
             });
-
             // Add hidden input for template_id inside the form
             $('form').append('<input type="hidden" name="template_id" id="template_id" />');
-
             // Update the template_id input value when a template row is clicked
             templateDataTable.on('click', 'tbody tr', function() {
                 var templateId = $(this).data('template-id');
                 $('#template_id').val(templateId);
             });
-
-
             let selectedData = [];
             let selectedDependencies = [];
-
-            // Function to handle row selection and show related cards
             function handleRowSelectionAndCardDisplay(row, serviceId, templateId) {
                 const cardIds = ['#dataCard', '#dependenciesCard', '#loopsCard', '#outputCard'];
                 row.siblings().removeClass('selected');
@@ -150,20 +135,14 @@ block content
                 if (templateId) {
                     $('#template_id').val(templateId);
                 }
-                cardIds.forEach(id => $(id).show()); // Changed from removeClass('d-none') to show()
+                cardIds.forEach(id => $(id).show());
             }
-
-            // Select service
             serviceDataTable.on('click', 'tbody tr', function() {
                 handleRowSelectionAndCardDisplay($(this), $(this).data('service-id'));
             });
-
-            // Select template
             templateDataTable.on('click', 'tbody tr', function() {
                 handleRowSelectionAndCardDisplay($(this), null, $(this).data('template-id'));
             });
-
-            // Filter templates by service
             function filterTemplatesByService(serviceId) {
                 const filteredData = templateDataTable
                     .rows()
@@ -175,8 +154,6 @@ block content
                 templateDataTable.clear();
                 templateDataTable.rows.add(filteredData).draw();
             }
-
-            // Add or remove data and dependencies
             $('#dataCard, #dependenciesCard').on('change', 'input[type="checkbox"]', function() {
                 const type = $(this).closest('.card').attr('id').replace('Card', '');
                 const listSelector = `#selected${type.charAt(0).toUpperCase() + type.slice(1)}List`;
@@ -198,7 +175,6 @@ block content
                 }
             });
 
-            // Add item to list
             function addToList(listId, itemId, itemName) {
                 const listItem = $('<li>').addClass('list-group-item').text(itemName).attr('data-id', itemId);
                 const removeButton = $('<button>').addClass('btn btn-danger btn-sm float-right remove-item').text('Remove');
@@ -206,7 +182,6 @@ block content
                 $(listId).append(listItem);
             }
 
-            // Remove items
             $('#selectedDataList, #selectedDependenciesList').on('click', '.remove-item', function() {
                 const itemId = $(this).closest('li').data('id');
                 const listId = $(this).closest('ul').attr('id');

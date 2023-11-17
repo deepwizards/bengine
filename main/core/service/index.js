@@ -55,7 +55,6 @@ router.post('/upload', upload.single('file'), async (req, res) => {
             const filePath = entry.path;
             const [rootDir, subDir, ...restPath] = filePath.split('/');
             let targetRootDir;
-
             if (rootDir === 'services') {
                 targetRootDir = '/services';
             } else if (rootDir === 'plugins') {

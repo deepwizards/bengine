@@ -30,13 +30,11 @@ block content
         document.addEventListener('DOMContentLoaded', () => {
             const copyButton = document.getElementById('copyButton');
             const contentToCopy = document.getElementById('copyContent');
-
             copyButton.addEventListener('click', () => {
                 const textarea = document.createElement('textarea');
                 textarea.textContent = contentToCopy.textContent;
                 document.body.appendChild(textarea);
                 textarea.select();
-
                 try {
                 document.execCommand('copy');
                 //- alert('Content copied to clipboard');
@@ -44,9 +42,6 @@ block content
                 console.error('Error copying content:', err);
                 //- alert('Error copying content');
                 }
-
                 document.body.removeChild(textarea);
             });
         });
-
-

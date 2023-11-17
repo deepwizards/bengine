@@ -105,8 +105,8 @@ async function init() {
 			res.locals.messages = req.flash();
 			next();
 		});
-		const coreModules = await loadModules(process.env.CORE_DIR || 'core', app);
-		const extensionModules = await loadModules(process.env.EXTENSION_DIR || 'modules', app);
+		const coreModules = await loadModules('core', app);
+		const extensionModules = await loadModules('modules', app);
 		if (!coreModules.length) {
 			throw new Error('Core modules failed to load. Halting server.');
 		}

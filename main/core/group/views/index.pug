@@ -43,7 +43,6 @@ block content
                                     a(href='#', onclick=`showGroupInfo('${group._id}')`)
                                         i.fas.fa-info-circle.ml-2
 
-
             .col-md-3
                 .card.bg-dark.text-white
                     //- .card-header
@@ -95,7 +94,6 @@ block content
                                     option(value=model._id) #{model.name}
                         hr
                         button.btn.btn-primary(type='submit') Add Group
-
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Close
 
@@ -111,7 +109,6 @@ block content
                     p#groupInfoDescription
                     button#editButton.btn.btn-primary(type='button', data-dismiss='modal') Edit Group
                     button#deleteButton.btn.btn-danger(type='button', data-dismiss='modal') Delete Group
-
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Close
 
@@ -153,7 +150,6 @@ block content
                     button.btn.btn-danger(type='button', onclick='deleteGroup()') Delete
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
 
-
     script.
         function showGroupInfo(groupId) {
             fetch(`/group/${groupId}`)
@@ -165,7 +161,6 @@ block content
                 })
                 .catch(error => console.error('Error:', error));
         }
-
         let selectedGroupId;
         function selectGroup(element) {
             const allGroups = document.querySelectorAll('.list-group-item.bg-dark.text-white.py-1');
@@ -177,45 +172,45 @@ block content
         function addItems() {
             const selectedGroup = document.querySelector('.list-group-item.bg-dark.text-white.py-1.active');
             if (!selectedGroup) {
-            alert('Please select a group first.');
-            return;
+                alert('Please select a group first.');
+                return;
             }
             const groupId = selectedGroup.dataset.groupId;
             const checkboxes = document.querySelectorAll('.tab-content input[type="checkbox"]');
             const itemIds = Array.from(checkboxes)
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => checkbox.id.replace('item', ''));
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.id.replace('item', ''));
             fetch(`/group/${groupId}/items`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ itemIds }),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ itemIds }),
             })
             .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            refreshItems(groupId);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                refreshItems(groupId);
             })
             .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
+                console.error('There has been a problem with your fetch operation:', error);
             });
         }
         function removeItems() {
             const selectedGroup = document.querySelector('.list-group-item.bg-dark.text-white.py-1.active');
             if (!selectedGroup) {
-            alert('Please select a group first.');
-            return;
+                alert('Please select a group first.');
+                return;
             }
             const groupId = selectedGroup.dataset.groupId;
             const checkboxes = document.querySelectorAll(`#group${groupId} input[type="checkbox"]`);
             const itemIds = Array.from(checkboxes)
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => checkbox.id.replace('item', ''));
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.id.replace('item', ''));
             fetch(`/group/${groupId}/remove-items`, {
             method: 'POST',
             headers: {
@@ -224,15 +219,16 @@ block content
             body: JSON.stringify({ itemIds }),
             })
             .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            refreshItems(groupId);            })
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                refreshItems(groupId);            
+            })
             .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
+                console.error('There has been a problem with your fetch operation:', error);
             });
         }
 
@@ -242,78 +238,34 @@ block content
                 .then(group => {
                     const groupListDiv = document.querySelector('#groupList');
                     groupListDiv.innerHTML = '';
-
-                    $('#groupList').jstree('destroy').jstree({
-                        'core': {
-                            'data': group.list.map(item => ({
-                                'id': `item${item._id}`,
-                                'text': item.name,
-                                'a_attr': {
-                                    'href': `/${group.type}/${item._id}`
-                                },
-                                'state': {
-                                    'selected': false
-                                },
-                                'li_attr': {
-                                    'value': item._id
-                                },
-                                    'type': 'file'
-                                }))
-                            },
-                            'plugins': ['search', 'sort', 'wholerow', 'checkbox', 'types', 'contextmenu'],
-                            'search': {
-                                'show_only_matches': true
-                            },
-                            'sort': function(a, b) {
-                                return this.get_text(a) > this.get_text(b) ? 1 : -1;
-                            },
-                            'types': {
-                            'default': {
-                                'icon': 'fa fa-folder'
-                            },
-                            'file': {
-                                'icon': 'fa fa-file'
-                            }
-                        }
+                    const collapseDiv = document.createElement('div');
+                    collapseDiv.classList.add('collapse', 'show');
+                    collapseDiv.id = `group${group._id}`;
+                    const cardDiv = document.createElement('div');
+                    cardDiv.classList.add('card', 'bg-dark', 'text-white');
+                    const cardHeaderDiv = document.createElement('div');
+                    cardHeaderDiv.classList.add('card-header');
+                    cardHeaderDiv.classList.add('scrowlable')
+                    cardHeaderDiv.innerHTML = `<i class="fas fa-list"></i><span class="ml-2">${group.type}</span>`;
+                    const table = document.createElement('table');
+                    table.classList.add('table', 'table-sm', 'table-dark');
+                    const thead = document.createElement('thead');
+                    thead.innerHTML = '<tr><th>Filename</th></tr>';
+                    const tbody = document.createElement('tbody');
+                    group.list.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td><input type="checkbox" id="item${item._id}" value="${item._id}"><a href="/${group.type}/${item._id}"><i class="fas fa-file ml-2"></i><span style="font-family: 'Lexend!important', sans-serif;font-weight: '100'!important; text-transform: capitalize;" class="ml-2">${item.name}</span></a></td>`;
+                        tbody.appendChild(tr);
                     });
+                    table.appendChild(thead);
+                    table.appendChild(tbody);
+                    cardDiv.appendChild(cardHeaderDiv);
+                    cardDiv.appendChild(table);
+                    collapseDiv.appendChild(cardDiv);
+                    groupListDiv.appendChild(collapseDiv);
                 })
                 .catch(error => console.error('Error:', error));
-            }
-
-        //- function loadGroupList(groupId) {
-        //-     fetch(`/group/${groupId}`)
-        //-         .then(response => response.json())
-        //-         .then(group => {
-        //-             const groupListDiv = document.querySelector('#groupList');
-        //-             groupListDiv.innerHTML = '';
-        //-             const collapseDiv = document.createElement('div');
-        //-             collapseDiv.classList.add('collapse', 'show');
-        //-             collapseDiv.id = `group${group._id}`;
-        //-             const cardDiv = document.createElement('div');
-        //-             cardDiv.classList.add('card', 'bg-dark', 'text-white');
-        //-             const cardHeaderDiv = document.createElement('div');
-        //-             cardHeaderDiv.classList.add('card-header');
-        //-             cardHeaderDiv.classList.add('scrowlable')
-        //-             cardHeaderDiv.innerHTML = `<i class="fas fa-list"></i><span class="ml-2">${group.type}</span>`;
-        //-             const table = document.createElement('table');
-        //-             table.classList.add('table', 'table-sm', 'table-dark');
-        //-             const thead = document.createElement('thead');
-        //-             thead.innerHTML = '<tr><th>Filename</th></tr>';
-        //-             const tbody = document.createElement('tbody');
-        //-             group.list.forEach(item => {
-        //-                 const tr = document.createElement('tr');
-        //-                 tr.innerHTML = `<td><input type="checkbox" id="item${item._id}" value="${item._id}"><a href="/${group.type}/${item._id}"><i class="fas fa-file ml-2"></i><span style="font-family: 'Lexend!important', sans-serif;font-weight: '100'!important; text-transform: capitalize;" class="ml-2">${item.name}</span></a></td>`;
-        //-                 tbody.appendChild(tr);
-        //-             });
-        //-             table.appendChild(thead);
-        //-             table.appendChild(tbody);
-        //-             cardDiv.appendChild(cardHeaderDiv);
-        //-             cardDiv.appendChild(table);
-        //-             collapseDiv.appendChild(cardDiv);
-        //-             groupListDiv.appendChild(collapseDiv);
-        //-         })
-        //-         .catch(error => console.error('Error:', error));
-        //- }
+        }
 
         function openEditGroupModal() {
             const selectedGroup = document.querySelector('.list-group-item.bg-dark.text-white.py-1.active');
@@ -322,19 +274,12 @@ block content
                 return;
             }
             const groupId = selectedGroup.dataset.groupId;
-            console.log(`GroupId: ${groupId}`); // add this line to log groupId
-
-            // fetch group data
             fetch(`/group/${groupId}`)
                 .then(response => response.json())
                 .then(group => {
-                    console.log(group); // log group data
-                    // Populate modal form with group's data...
                     document.getElementById('editGroupName').value = group.name;
                     document.getElementById('editGroupDescription').value = group.description;
                     document.getElementById('editGroupType').value = group.type;
-
-                    // Hide the current modal and setup the event to show the new one
                     $('#groupInfoModal').on('hidden.bs.modal', function () {
                         $('#editGroupModal').modal('show');
                         $(this).off('hidden.bs.modal');
@@ -343,8 +288,6 @@ block content
                 })
                 .catch(error => console.error('Error:', error));
         }
-
-
         $('#editButton').on('click', function () {
             const selectedGroup = document.querySelector('.list-group-item.bg-dark.text-white.py-1.active');
             if (!selectedGroup) {
@@ -360,7 +303,6 @@ block content
             });
             $('#groupInfoModal').modal('hide');
         });
-
         $('#deleteButton').on('click', function () {
             const selectedGroup = document.querySelector('.list-group-item.bg-dark.text-white.py-1.active');
             if (!selectedGroup) {
