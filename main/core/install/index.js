@@ -11,11 +11,11 @@ const upload = multer({ dest: 'ext-uploads/' });
 
 // Serve the main page
 router.get('/', (req, res) => {
-    res.render('index');
+    res.render('install/views/index');
 });
 
 // Handle extension installation
-router.post('/install', upload.single('extensionZip'), async (req, res) => {
+router.post('/', upload.single('extensionZip'), async (req, res) => {
     try {
         const result = await extensionManager.installExtension(req.file.path);
         await dockerComposeManager.updateDockerCompose(result.services);

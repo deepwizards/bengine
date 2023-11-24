@@ -36,3 +36,4 @@ jspm_packages/
 typings/
 
 .env
+ext-uploads/*
