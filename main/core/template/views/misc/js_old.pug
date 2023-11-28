@@ -1,0 +1,318 @@
+script.
+    const generateTagList = (tagCounts) => {
+        $('#allTags').empty();
+        Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).forEach(([tag, count]) => {
+            const badge = `<span class="badge badge-primary m-1 filter-tag" data-tag="${tag}">${tag} (${count})</span>`;
+            $('#allTags').append(badge);
+        });
+    };
+    const getTagsFromEditor = () => {
+            const tags = [];
+            $('#editorTags span').each(function () {
+                tags.push($(this).text().trim());
+            });
+            return tags;
+        };
+    
+        const renderTagsToEditor = (tags) => {
+            $('#editorTags').empty();
+            tags.forEach((tag) => {
+                const badge = `<span class="badge badge-primary mr-2">${tag}<i class="fa fa-times ml-2 remove-tag"></i></span>`;
+                $('#editorTags').append(badge);
+            });
+        };
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentProjectId = "#{currentTemplateId}";
+        
+        // Toggle active class for list group items
+        document.querySelectorAll("li.list-group-item").forEach(item => {
+        const link = item.querySelector("a");
+        if (link && link.href.endsWith(`/project/${currentProjectId}`)) {
+            item.classList.add("bg-active");
+        }
+        });
+
+        // Expand groups that contain the active project
+        document.querySelectorAll(".group-body").forEach(group => {
+        const hasActive = Array.from(group.querySelectorAll("li.list-group-item")).some(item => item.classList.contains("bg-active"));
+        if (hasActive) {
+            const collapseElement = new bootstrap.Collapse(group, {
+            toggle: false
+            });
+            collapseElement.show();
+        }
+        });
+    });
+    $(document).ready(function() {
+        $('.group-header').on('click', function(event) {
+            event.stopPropagation();
+            const target = $(this).data('target');
+            $(target).toggleClass('show');
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const templateId = document.querySelector('#tid').value;
+
+        const testServiceButton = document.getElementById('testServiceButton');
+        const responseDataContainer = document.getElementById('responseDataContainer');
+        const requestDataTextarea = document.getElementById('requestDataTextarea');
+        const testHistoryList = document.getElementById('testHistoryList');
+        const modalBody = document.getElementById('modalBody');
+
+        const addBlockButton = document.querySelector('#addBlockButton');
+        const blocksContainer = document.querySelector('#blocksContainer');
+
+        const useSelectedBlockButton = document.getElementById('useSelectedBlockButton');
+        const blocksTable = document.getElementById('dataTable');
+        let selectedBlockId;
+        let selectedRow;
+
+        blocksTable.addEventListener('click', (e) => {
+            const row = e.target.closest('tr');
+            if (row) {
+                if (selectedRow) {
+                    selectedRow.classList.remove('bg-active');
+                }
+                row.classList.add('bg-active');
+                selectedRow = row;
+                selectedBlockId = row.dataset.blockId;
+            }
+        });
+
+        useSelectedBlockButton.addEventListener('click', async () => {
+            if (!selectedBlockId) {
+                alert("Please select a block.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/template/edit/${templateId}/block`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ blockId: selectedBlockId })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                alert("Error adding block. Please try again.");
+            }
+        });
+
+
+        addBlockButton.addEventListener('click', async () => {
+            const selectedType = blockTypeSelector.value;
+            try {
+                const response = await fetch(`/template/edit/${templateId}/block`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ type: selectedType })
+                });
+
+                const result = await response.json();
+                
+                if(result.success) {
+                    location.reload();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                alert("Error adding block. Please try again.");
+            }
+        });
+
+        document.querySelectorAll('.moveButton').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                const action = btn.getAttribute('data-action'); // Use getAttribute
+                const blockId = btn.closest('.blockCard').getAttribute('data-block-id');
+
+                try {
+                    const response = await fetch(`/template/edit/${templateId}/block`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ action, blockId })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    alert("Error processing action. Please try again.");
+                }
+            });
+        });
+
+        document.querySelectorAll('.deleteButton').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const blockId = btn.closest('.blockCard').getAttribute('data-block-id');
+                await fetch(`/template/edit/${templateId}/block`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'delete', blockId })
+                });
+                location.reload();
+            });
+        });
+        
+        document.querySelectorAll('.blockCard').forEach((blockCard) => {
+            const blockId = blockCard.getAttribute('data-block-id');
+            const textarea = blockCard.querySelector(`textarea[name='blockBody_${blockId}']`);
+            const blockNameInput = blockCard.querySelector(`input[name='blockName_${blockId}']`);
+            
+            const updateBlock = async (updatedFields) => {
+                try {
+                    const response = await fetch(`/template/edit/${templateId}/block/${blockId}/update`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedFields)
+                    });
+
+                    const result = await response.json();
+                    if (!result.success) {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    alert("Error updating block. Please try again.");
+                }
+            };
+
+            textarea.addEventListener('change', async () => {
+                const blockTextValue = textarea.value;
+                await updateBlock({ body: blockTextValue });
+            });
+
+            blockNameInput.addEventListener('change', async () => {
+                const blockNameValue = blockNameInput.value;
+                await updateBlock({ name: blockNameValue });
+            });
+        });
+
+        testServiceButton.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const templateId = testServiceButton.dataset.id;
+
+            try {
+                const response = await fetch(`/template/test/${templateId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                responseDataContainer.textContent = JSON.stringify(data, null, 2);
+
+                // Update test history
+                const newTestItem = document.createElement('li');
+                newTestItem.classList.add('list-group-item', 'test-history-item');
+                newTestItem.setAttribute('data-toggle', 'modal');
+                newTestItem.setAttribute('data-target', '#testDetailsModal');
+                newTestItem.setAttribute('data-id', data.testId);
+                newTestItem.textContent = `Test on ${data.created_at} | ${data.__v} | ${data.template_id}`;
+                testHistoryList.prepend(newTestItem);
+            } catch (error) {
+                responseDataContainer.textContent = `Error: ${error.message}`;
+            }
+        });
+
+        testHistoryList.addEventListener('click', function(event) {
+            if (event.target.classList.contains('test-history-item')) {
+                const testId = event.target.dataset.id;
+                // Fetch and display test details in the modal
+                fetch(`/template/test/details/${testId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        modalBody.textContent = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        modalBody.textContent = `Error: ${error.message}`;
+                    });
+            }
+        });
+
+        $('#lockButton').click(function() {
+            fetch(`/template/lock/${templateId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                console.log('Template locked:', data);
+                // refresh the page
+                wi
+
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        $('#unlockButton').click(function() {
+            fetch(`/template/unlock/${templateId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                console.log('Template unlocked:', data);
+                toggleFormFields(false);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        $('#saveVersionButton').click(function() {
+        const templateId = 'your-template-id'; // Replace with actual template ID
+        // Assuming you're sending some data to save as a new version
+        const data = { /* version data */ };
+
+        fetch(`/template/version/${templateId}/save`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('New version saved:', data);
+                // Update UI accordingly
+        })
+            .catch(error => console.error('Error:', error));
+        });
+
+        $('#selectVersionButton').click(function() {
+            const selectedVersionId = $('#versionList').find('a.selected').data('version-id');
+            // Now use this selectedVersionId to load the version
+        });
+
+        $('#loadVersionButton').click(function() {
+
+        const versionId = 'version-id-to-load'; // Replace with actual version ID
+
+        fetch(`/template/version/${templateId}/load/${versionId}`)
+            .then(response => response.json())
+            .then(data => {
+            console.log('Version loaded:', data);
+            // Update UI accordingly
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function toggleFormFields(isLocked) {
+            $(':input').prop('disabled', isLocked);
+        }
+
+        // Call this function with true or false based on the `is_locked` status of the template
+        toggleFormFields(template.is_locked);
+
+
+    });
