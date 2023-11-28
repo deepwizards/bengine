@@ -170,7 +170,7 @@ a:hover {
 /* Cards */
 .card {
     background-color: var(--gray)!important;
-    border: 1px solid #bebebe!important;
+    border: 2px solid #979797!important;
     border-radius: 3px;
 }
 
@@ -180,7 +180,7 @@ a:hover {
 }
 
 .card-body {
-    background-color: #5b5b5b;
+    background-color: #303030;
 }
 .card-footer {
     background-color: var(--gray);

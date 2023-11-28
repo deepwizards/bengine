@@ -56,7 +56,7 @@ script.
             <div class="container-fluid">
                 <div class="row">
                     <!-- Job Details -->
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="card mt-4">
                             <div class="card-header">
                                 <span class="badge badge-pill single-status float-right"></span>
@@ -69,14 +69,25 @@ script.
                             </div>
                         </div>
                     </div>
-                    <!-- Service Info -->
-                    <div class="col-md-6">
+                    <!-- Job Service Info -->
+                    <div class="col-md-4">
                         <div class="card mt-4">
                             <div class="card-header">
                                 <h4 class="service-name">Service</h4>
                             </div>
                             <div class="card-body service-body">
                                 <!-- Service info will be dynamically populated -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Job Outputs Info -->
+                    <div class="col-md-4">
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h4 class="service-name">Outputs</h4>
+                            </div>
+                            <div class="card-body output-body">
+                                <!-- Outputs info will be dynamically populated -->
                             </div>
                         </div>
                     </div>
@@ -134,13 +145,17 @@ script.
     }
 
     function fetchAndDisplayJobDetails(detailsRow, job) {
-        $.ajax({
-            url: `/project/api/job/${job._id}`,
-            method: 'GET',
-            success: data => populateJobDetails(detailsRow, data),
-            error: () => console.error('Error fetching job details')
-        });
+        fetch(`/project/api/job/${job._id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => populateJobDetails(detailsRow, data))
+            .catch(() => console.error('Error fetching job details'));
     }
+
 
     function populateJobDetails(detailsRow, data) {
         const detailsCard = detailsRow.find('.card');
@@ -149,13 +164,15 @@ script.
         detailsCard.find('.job-flow-id').attr('href', `/flow/${data.flow_id}`).text(`Flow ID: ${data.flow_id}`);
         detailsCard.find('.job-created-at').text(`Created At: ${data.created_at}`);
         detailsCard.find('.job-updated-at').text(`Last Updated: ${data.updated_at}`);
-        
+        const outputsCard = detailsRow.find('.outputs-body');
+        outputsCard.html(`
+            <pre>${data.outputs}</pre>
+        `); 
         const serviceCard = detailsRow.find('.service-body');
         serviceCard.html(`
             <div class="row">
                 <div class="col-md-2 text-center">
                     <i class="fa fa-${data.template.service.icon}" style="font-size: 48px;"></i>
-                    <small class="text-muted">${data.template.service.host}:${data.template.service.port}/${data.template.service.endpoint}</small>
                 </div>
                 <div class="col-md-10">
                     <div class="row">
@@ -165,7 +182,6 @@ script.
                                 <p class="mb-1">${data.template.service.api}</p>
                             </div>
                             <div class="d-flex">
-                                <label class="mr-2">Description:</label>
                                 <p class="mb-1">${data.template.service.description}</p>
                             </div>
                         </div>
@@ -180,16 +196,18 @@ script.
                             </div>
                         </div>
                     </div>
+                    <small class="text-muted">bengine://${data.template.service.api}:${data.template.service.port}${data.template.service.endpoint}</small>
                 </div>
             </div>
         `);
 
-        detailsRow.find('.template-body').html(`<p>${data.template ? data.template.name : 'None'}</p>`);
+    detailsRow.find('.template-body').html(`<p>${data.template ? `<a href="/template/edit/${data.template._id}" target="_blank">${data.template.name}</a>` : 'None'}</p>`);
 
-        const dataList = data.data.map(d => `<li>${d.name}</li>`).join('');
-        detailsRow.find('.data-body').html(`<ul>${dataList}</ul>`);
+    const dataList = data.data.map(d => `<li><a href="/data/${d._id}" target="_blank">${d.name}</a></li>`).join('');
+    detailsRow.find('.data-body').html(`<ul>${dataList}</ul>`);
 
-        const dependenciesList = data.dependencies.map(d => `<li>${d.name}</li>`).join('');
-        detailsRow.find('.dependencies-body').html(`<ul>${dependenciesList}</ul>`);
+    const dependenciesList = data.dependencies.map(d => `<li><a href="/job/${d._id}" target="_blank">${d.name}</a></li>`).join('');
+    detailsRow.find('.dependencies-body').html(`<ul>${dependenciesList}</ul>`);
+
     }
 

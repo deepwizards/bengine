@@ -55,7 +55,7 @@ exports.updateFlow = async (req, res) => {
         }
 
         await flow.save();
-        res.redirect(`/flow/${req.params.id}`);
+        res.redirect(`/project/${flow.project_id}`);
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating flow');

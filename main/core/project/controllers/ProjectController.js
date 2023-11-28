@@ -100,7 +100,7 @@ const ProjectController = {
                     await Job.findByIdAndUpdate(job._id, { status: 'open' });
                 }
             }
-            res.redirect('/queue');
+            res.redirect(`/project/${req.params.id}`);
         } catch (err) {
             console.error(err);
             res.status(500).send('An error occurred while activating the project');

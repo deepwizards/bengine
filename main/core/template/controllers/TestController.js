@@ -16,8 +16,16 @@ const TestController = {
 
             const blocks = template.inputs.map(input => input.block);
             const processedData = await processBlocks(blocks);
+            console.log('HERE')
+            console.log(processedData)
 
-            const gptResponse = await axios.post('http://localhost:3001/gpt', { data: processedData });
+            const gptResponse = await axios.post(
+                'http://localhost:3001/gpt', { 
+                    data: { 
+                        prompt: processedData 
+                    }
+                }
+            );
             const promptOutput = gptResponse.data;
 
             const newTest = new Test({
