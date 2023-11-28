@@ -3,23 +3,20 @@ import { limiter, MAX_RETRIES, RETRY_DELAY } from "./config.js";
 
 export const sendRequest = async (options) => {
     let retries = 0;
-    const makeRequest = async () => {
-        console.log('her1')
-        console.log(options)
+
+    async function attemptRequest() {
         try {
-            console.log('lets try')
-            return await limiter.schedule(() => axios.post(options.url, { data: options.data }));
+            return await limiter.schedule(() => axios.post(options.url, options.data));
         } catch (error) {
-            console.log(error)
-            retries++;
-            if (retries < MAX_RETRIES) {
+            if (++retries < MAX_RETRIES) {
                 console.log(`Retrying (${retries}/${MAX_RETRIES})...`);
                 await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-                return makeRequest();
+                return attemptRequest();
             } else {
                 throw new Error("Max retries reached");
             }
         }
-    };
-    return await makeRequest();
+    }
+
+    return attemptRequest();
 };

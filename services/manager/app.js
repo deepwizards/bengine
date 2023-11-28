@@ -1,60 +1,69 @@
 import express from "express";
-import bodyParser from "body-parser";
 import Redis from "ioredis";
 import { isMainThread } from "worker_threads";
-import { JobQueue } from "./jobQueue.js";
+import { JobQueue } from "./includes/jobQueue.js";
+
 const app = express();
 app.use(express.json());
-app.use(bodyParser.json());
-const client = new Redis('redis://redis:6379');
-client.on("connect", function () {
+
+const redisClient = new Redis('redis://redis:6379');
+
+redisClient.on("connect", () => {
     console.log("Connected to Redis");
 });
-client.on("error", function (error) {
+
+redisClient.on("error", (error) => {
     console.error("Redis error:", error);
 });
+
+async function handleJobSubmission(req, res) {
+    try {
+        const jobId = await jobQueue.addJob(req.body);
+        res.json({ jobId });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+async function handleJobStatusRequest(req, res) {
+    const jobId = req.params.jobId;
+    const jobDataJSON = await redisClient.hget(jobId, "data");
+
+    if (!jobDataJSON) {
+        return res.status(404).json({ message: "Job not found" });
+    }
+
+    const jobData = JSON.parse(jobDataJSON);
+    const response = { status: jobData.status };
+
+    if (jobData.status === 'completed') {
+        const resultJSON = await redisClient.hget(jobId, "result");
+        response.result = resultJSON ? JSON.parse(resultJSON) : null;
+    } else if (jobData.status === 'failed') {
+        const errorJSON = await redisClient.hget(jobId, "error");
+        response.error = errorJSON ? JSON.parse(errorJSON) : null;
+    }
+
+    res.json(response);
+}
+
+function sendServiceStatus(req, res) {
+    res.status(200).json({
+        status: 'OK',
+        message: 'Service Manager API is running'
+    });
+}
+
 if (isMainThread) {
-    const jobQueue = new JobQueue(client);
-    const app = express();
-    app.use(express.json());
-    app.post("/submitJob", async (req, res) => {
-        try {
-            const jobId = await jobQueue.addJob({ api: req.body.api, api_port: req.body.api_port, endpoint: req.body.endpoint, data: req.body.data });
-            res.json({ jobId });
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    });
-    app.get("/jobStatus/:jobId", async (req, res) => {
-        const jobId = req.params.jobId;
-        const jobDataJSON = await client.hget(jobId, "data");
-        if (!jobDataJSON) {
-            res.status(404).json({ message: "Job not found" });
-        } else {
-            const jobData = JSON.parse(jobDataJSON);
-            let response = {
-                status: jobData.status
-            };
-            if (jobData.status === 'completed') {
-                const resultJSON = await client.hget(jobId, "result");
-                const result = resultJSON ? JSON.parse(resultJSON) : null;
-                response.result = result;
-            } else if (jobData.status === 'failed') {
-                const errorJSON = await client.hget(jobId, "error");
-                const error = errorJSON ? JSON.parse(errorJSON) : null;
-                response.error = error;
-            }
-            res.json(response);
-        }
-    });
-    app.get('/status', (req, res) => {
-        res.status(200).send({
-            status: 'OK',
-            message: 'Service Manager API is running'
-        })
-    });
+    const jobQueue = new JobQueue(redisClient);
+
+    app.post("/submitJob", handleJobSubmission);
+    app.get("/jobStatus/:jobId", handleJobStatusRequest);
+    app.get('/status', sendServiceStatus);
+
     app.listen(3000, () => {
         console.log("Server listening on port 3000");
     });
+
     jobQueue.initQueueFromRedis();
 }
