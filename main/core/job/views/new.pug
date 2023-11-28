@@ -107,91 +107,112 @@ block content
 
     script.
         $(document).ready(function() {
-            const serviceDataTable = $('#serviceDataTable').DataTable({
-                scrollY: 300,
-                scroller: true
-            });
-            const templateDataTable = $('#templateDataTable').DataTable({
-                scrollY: 300,
-                scroller: true
-            });
-            // Add hidden input for template_id inside the form
-            $('form').append('<input type="hidden" name="template_id" id="template_id" />');
-            // Update the template_id input value when a template row is clicked
+            const serviceDataTable = initializeDataTable('#serviceDataTable');
+            const templateDataTable = initializeDataTable('#templateDataTable');
+            appendHiddenTemplateInput();
+
             templateDataTable.on('click', 'tbody tr', function() {
-                var templateId = $(this).data('template-id');
-                $('#template_id').val(templateId);
+                updateTemplateId($(this).data('template-id'));
             });
+
             let selectedData = [];
             let selectedDependencies = [];
-            function handleRowSelectionAndCardDisplay(row, serviceId, templateId) {
-                const cardIds = ['#dataCard', '#dependenciesCard', '#loopsCard', '#outputCard'];
-                row.siblings().removeClass('selected');
-                row.addClass('selected');
-                if (serviceId) {
-                    $('#templateCard').show(); // Fix to ensure template card is displayed when service is selected
-                    filterTemplatesByService(serviceId);
-                }
-                if (templateId) {
-                    $('#template_id').val(templateId);
-                }
-                cardIds.forEach(id => $(id).show());
-            }
+
             serviceDataTable.on('click', 'tbody tr', function() {
-                handleRowSelectionAndCardDisplay($(this), $(this).data('service-id'));
-            });
-            templateDataTable.on('click', 'tbody tr', function() {
-                handleRowSelectionAndCardDisplay($(this), null, $(this).data('template-id'));
-            });
-            function filterTemplatesByService(serviceId) {
-                const filteredData = templateDataTable
-                    .rows()
-                    .nodes()
-                    .to$() // Convert to jQuery object for filtering
-                    .filter(function() {
-                        return $(this).data('service') == serviceId;
-                    }).toArray(); // Convert the jQuery object back to an array
-                templateDataTable.clear();
-                templateDataTable.rows.add(filteredData).draw();
-            }
-            $('#dataCard, #dependenciesCard').on('change', 'input[type="checkbox"]', function() {
-                const type = $(this).closest('.card').attr('id').replace('Card', '');
-                const listSelector = `#selected${type.charAt(0).toUpperCase() + type.slice(1)}List`;
-                const id = $(this).data(`${type}-id`);
-                if (this.checked) {
-                    if (type === 'data') {
-                        selectedData.push(id);
-                    } else {
-                        selectedDependencies.push(id);
-                    }
-                    addToList(listSelector, id, $(this).next('label').text());
-                } else {
-                    if (type === 'data') {
-                        selectedData = selectedData.filter(dataId => dataId !== id);
-                    } else {
-                        selectedDependencies = selectedDependencies.filter(dependencyId => dependencyId !== id);
-                    }
-                    $(`${listSelector} [data-id="${id}"]`).remove();
-                }
+                handleRowSelection($(this), $(this).data('service-id'));
             });
 
-            function addToList(listId, itemId, itemName) {
-                const listItem = $('<li>').addClass('list-group-item').text(itemName).attr('data-id', itemId);
-                const removeButton = $('<button>').addClass('btn btn-danger btn-sm float-right remove-item').text('Remove');
-                listItem.append(removeButton);
-                $(listId).append(listItem);
-            }
+            templateDataTable.on('click', 'tbody tr', function() {
+                handleRowSelection($(this), null, $(this).data('template-id'));
+            });
+
+            $('#dataCard, #dependenciesCard').on('change', 'input[type-checkbox]', function() {
+                handleCheckboxChange($(this));
+            });
 
             $('#selectedDataList, #selectedDependenciesList').on('click', '.remove-item', function() {
-                const itemId = $(this).closest('li').data('id');
-                const listId = $(this).closest('ul').attr('id');
-                $(this).closest('li').remove();
-                if (listId.includes('Data')) {
-                    selectedData = selectedData.filter(id => id !== itemId);
-                } else {
-                    selectedDependencies = selectedDependencies.filter(id => id !== itemId);
-                }
-                // Update the checkboxes status
-                $(`input[data-${listId.toLowerCase().replace('selected', '')}-id="${itemId}"]`).prop('checked', false);
+                handleRemoveButtonClick($(this));
             });
         });
+
+        function initializeDataTable(selector) {
+            return $(selector).DataTable({
+                scrollY: 300,
+                scroller: true
+            });
+        }
+
+        function appendHiddenTemplateInput() {
+            $('form').append('<input type="hidden" name="template_id" id="template_id" />');
+        }
+
+        function updateTemplateId(templateId) {
+            $('#template_id').val(templateId);
+        }
+
+        function handleRowSelection(row, serviceId, templateId = null) {
+            const cardIds = ['#dataCard', '#dependenciesCard', '#loopsCard', '#outputCard'];
+            row.siblings().removeClass('selected');
+            row.addClass('selected');
+            if (serviceId) {
+                $('#templateCard').show();
+                filterTemplatesByService(serviceId, templateId);
+            }
+            cardIds.forEach(id => $(id).show());
+        }
+
+        function filterTemplatesByService(serviceId) {
+            const filteredData = templateDataTable
+                .rows()
+                .nodes()
+                .to$()
+                .filter(function() {
+                    return $(this).data('service') == serviceId;
+                }).toArray();
+            templateDataTable.clear();
+            templateDataTable.rows.add(filteredData).draw();
+        }
+
+        function handleCheckboxChange(checkbox) {
+            const type = checkbox.closest('.card').attr('id').replace('Card', '');
+            const listSelector = `#selected${type.charAt(0).toUpperCase() + type.slice(1)}List`;
+            const id = checkbox.data(`${type}-id`);
+            if (checkbox.is(':checked')) {
+                updateSelectedList(type, id, checkbox.next('label').text(), listSelector, true);
+            } else {
+                updateSelectedList(type, id, checkbox.next('label').text(), listSelector, false);
+            }
+        }
+
+        function updateSelectedList(type, id, itemName, listSelector, add) {
+            if (add) {
+                selected[type].push(id);
+                addToList(listSelector, id, itemName);
+            } else {
+                selected[type] = selected[type].filter(itemId => itemId !== id);
+                removeFromList(listSelector, id);
+            }
+        }
+
+        function addToList(listId, itemId, itemName) {
+            const listItem = $('<li>').addClass('list-group-item').text(itemName).attr('data-id', itemId);
+            const removeButton = $('<button>').addClass('btn btn-danger btn-sm float-right remove-item').text('Remove');
+            listItem.append(removeButton);
+            $(listId).append(listItem);
+        }
+
+        function removeFromList(listId, itemId) {
+            $(`${listId} [data-id="${itemId}"]`).remove();
+        }
+
+        function handleRemoveButtonClick(button) {
+            const itemId = button.closest('li').data('id');
+            const listId = button.closest('ul').attr('id');
+            removeFromList(`#${listId}`, itemId);
+            updateCheckboxStatus(listId, itemId);
+        }
+
+        function updateCheckboxStatus(listId, itemId) {
+            const type = listId.includes('Data') ? 'data' : 'dependencies';
+            $(`input[data-${type}-id="${itemId}"]`).prop('checked', false);
+        }

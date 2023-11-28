@@ -4,7 +4,7 @@ const TemplateController = require('./controllers/TemplateController');
 const BlockController = require('./controllers/BlockController');
 const TestController = require('./controllers/TestController');
 
-const validateObjectId = require('../../helpers/utils');
+const { validateObjectId } = require('../../helpers/utils');
 
 // Routes for Template
 router.route('/')

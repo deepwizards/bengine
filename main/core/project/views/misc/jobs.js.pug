@@ -2,191 +2,194 @@ script.
     function renderJobs(detailsRow, jobs, flowId) {
         const tbody = detailsRow.find('tbody');
         tbody.empty();
-        jobs.forEach(job => {
-            const row = $(`
-                <tr class="job-row" data-job-id="${job._id}">
-                    <td>${job.name}</td>
-                    <td><span class="btn btn-info">${job.template.service.name}</span></td>
-                    <td><span class="badge badge-pill badge-${job.status}">${job.status}</span></td>
-                    <td>${job.dependencies ? job.dependencies.length : 'None'}</td>
-                    <td>${job.loops ? job.loops : 'None'}</td>
-                    <td>
-                        <a class="btn btn-sm btn-primary mr-1" href="/job/${job._id}?flow_id=${flowId}" data-toggle="tooltip" data-placement="top" title="View job details."><i class="fas fa-search"></i></a>
-                        <a class="btn btn-sm btn-secondary mr-1" href="/job/edit/${job._id}?flow_id=${flowId}" data-toggle="tooltip" data-placement="top" title="Edit job."><i class="fas fa-edit"></i></a>
-                        <form method="POST" action="/job/duplicate/${job._id}" style="display: inline;">
-                            <input type="hidden" name="flow_id" value="${flowId}">
-                            <button class="btn btn-sm btn-secondary mr-1" type="submit" data-toggle="tooltip" data-placement="top" title="Duplicate job."><i class="fas fa-copy"></i></button>
-                        </form>
-                        <form method="POST" action="/job/update/${job._id}" style="display: inline;">
-                            <input type="hidden" name="action" value="rerun">
-                            <input type="hidden" name="flow_id" value="${flowId}">
-                            <button class="btn btn-sm btn-success mr-1" type="submit" data-toggle="tooltip" data-placement="top" title="Rerun job."><i class="fas fa-redo"></i></button>
-                        </form>
-                        <form method="POST" action="/job/update/${job._id}" style="display: inline;">
-                            <input type="hidden" name="action" value="cancel">
-                            <input type="hidden" name="flow_id" value="${flowId}">
-                            <button class="btn btn-sm btn-danger mr-1" type="submit" data-toggle="tooltip" data-placement="top" title="Cancel job."><i class="fas fa-ban"></i></button>
-                        </form>
-                        <a class="btn btn-sm btn-danger" href="/job/delete/${job._id}?flow_id=${flowId}" data-toggle="tooltip" data-placement="top" title="Delete job."><i class="fas fa-trash"></i></a>
-                    </td>
-                </tr>
-            `);
-            
-            const detailsRow = $(`
-                <tr class="job-details d-none">
-                    <td colspan="6">
-                        <!-- Job details HTML template -->
-                        <tr class="job-details d-none">
-                            <td colspan="6">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <!-- Job Details -->
-                                        <div class="col-md-6">
-                                            <div class="card mt-4">
-                                                <div class="card-header">
-                                                    <span class="badge badge-pill single-status float-right"></span>
-                                                    <h4 class="job-name"></h4>
-                                                </div>
-                                                <div class="card-body">
-                                                    <a class="job-flow-id" href="#"></a>
-                                                    <p class="card-text job-created-at"></p>
-                                                    <p class="card-text job-updated-at"></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Service Info -->
-                                        <div class="col-md-6">
-                                            <div class="card mt-4">
-                                                <div class="card-header">
-                                                    <h4 class="service-name">Service</h4>
-                                                </div>
-                                                <div class="card-body service-body">
-                                                    <!-- ...service info goes here... -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <!-- Template Info -->
-                                        <div class="col-md-4">
-                                            <div class="card mt-4">
-                                                <div class="card-header">
-                                                    <h5>Template</h5>
-                                                </div>
-                                                <div class="card-body template-body">
-                                                    <!-- ...template info goes here... -->
-                                                </div>
-                                            </div>    
-                                        </div>
-                                    
-                                        <!-- Data Info -->
-                                        <div class="col-md-4">
-                                            <div class="card mt-4">
-                                                <div class="card-header">
-                                                    <h5>Data</h5>
-                                                </div>
-                                                <div class="card-body data-body">
-                                                    <!-- ...data info goes here... -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Dependencies Info -->
-                                        <div class="col-md-4">
-                                            <div class="card mt-4">
-                                                <div class="card-header">
-                                                    <h5>Dependencies</h5>
-                                                </div>
-                                                <div class="card-body dependencies-body">
-                                                    <!-- ...dependencies info goes here... -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </td>
-                </tr>
-            `);
 
-            tbody.append(row);
-            tbody.append(detailsRow);
-        //- });
+        jobs.forEach(job => appendJobRow(tbody, job, flowId));
+    }
 
-            // Fetch and populate details on click
-            $(row).click(function() {
-                // Toggle bg-active class for the clicked row
-                $(this).toggleClass('bg-active');
+    function appendJobRow(tbody, job, flowId) {
+        const jobRow = $(`
+            <tr class="job-row" data-job-id="${job._id}">
+                <td>${job.name}</td>
+                <td><span class="btn btn-info">${job.template.service.name}</span></td>
+                <td><span class="badge badge-pill badge-${job.status}">${job.status}</span></td>
+                <td>${job.dependencies ? job.dependencies.length : 'None'}</td>
+                <td>${job.loops ? job.loops : 'None'}</td>
+                <td>${createActionButtons(job, flowId)}</td>
+            </tr>
+        `);
+        const detailsRow = $(`
+            <tr class="job-details d-none">
+                <td colspan="6">${createDetailsTemplate()}</td>
+            </tr>
+        `);
 
-                // Remove bg-active class from all other rows
-                //- $('.job-row').not(this).removeClass('bg-active');
+        tbody.append(jobRow);
+        tbody.append(detailsRow);
 
-                if (detailsRow.hasClass('d-none')) {
-                    detailsRow.removeClass('d-none');
-                    // Fetch job details
-                    $.ajax({
-                        url: `/project/api/job/${job._id}`,
-                        method: 'GET',
-                        success: function (data) {
-                            // Populate job info
-                            const detailsCard = detailsRow.find('.card');
-                            detailsCard.find('.job-name').text(`Job: ${data.name}`);
-                            detailsCard.find('.single-status').text(data.status).addClass(`badge-${data.status}`);
-                            detailsCard.find('.job-flow-id').attr('href', `/flow/${data.flow_id}`).text(`Flow ID: ${data.flow_id}`);
-                            detailsCard.find('.job-created-at').text(`Created At: ${data.created_at}`);
-                            detailsCard.find('.job-updated-at').text(`Last Updated: ${data.updated_at}`);
-                            
-                            // Populate service info
-                            const serviceCard = detailsRow.find('.service-body');
-                            serviceCard.html(`
-                                <div class="row">
-                                    <div class="col-md-2 text-center">
-                                        <i class="fa fa-${data.template.service.icon}" style="font-size: 48px;"></i>
-                                        <small class="text-muted">${data.template.service.host}:${data.template.service.port}/${data.template.service.endpoint}</small>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="d-flex">
-                                                    <label class="mr-2">API:</label>
-                                                    <p class="mb-1">${data.template.service.api}</p>
-                                                </div>
-                                                <div class="d-flex">
-                                                    <label class="mr-2">Description:</label>
-                                                    <p class="mb-1">${data.template.service.description}</p>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="d-flex">
-                                                    <label class="mr-2">Input Format:</label>
-                                                    <p class="mb-1">${data.template.service.input_format}</p>
-                                                </div>
-                                                <div class="d-flex">
-                                                    <label class="mr-2">Output Format:</label>
-                                                    <p class="mb-1">${data.template.service.output_format}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `);
+        jobRow.click(() => toggleDetails(jobRow, detailsRow, job));
+    }
 
-                            // Populate template info
-                            detailsRow.find('.template-body').html(`<p>${data.template ? data.template.name : 'None'}</p>`);
+    function createActionButtons(job, flowId) {
+        return `
+            <a class="btn btn-sm btn-primary mr-1" href="/job/${job._id}?flow_id=${flowId}" data-toggle="tooltip" data-placement="top" title="View job details."><i class="fas fa-search"></i></a>
+            <a class="btn btn-sm btn-secondary mr-1" href="/job/edit/${job._id}?flow_id=${flowId}" data-toggle="tooltip" data-placement="top" title="Edit job."><i class="fas fa-edit"></i></a>
+            <form method="POST" action="/job/duplicate/${job._id}" style="display: inline;">
+                <input type="hidden" name="flow_id" value="${flowId}">
+                <button class="btn btn-sm btn-secondary mr-1" type="submit" data-toggle="tooltip" data-placement="top" title="Duplicate job."><i class="fas fa-copy"></i></button>
+            </form>
+            <form method="POST" action="/job/update/${job._id}" style="display: inline;">
+                <input type="hidden" name="action" value="rerun">
+                <input type="hidden" name="flow_id" value="${flowId}">
+                <button class="btn btn-sm btn-success mr-1" type="submit" data-toggle="tooltip" data-placement="top" title="Rerun job."><i class="fas fa-redo"></i></button>
+            </form>
+            <form method="POST" action="/job/update/${job._id}" style="display: inline;">
+                <input type="hidden" name="action" value="cancel">
+                <input type="hidden" name="flow_id" value="${flowId}">
+                <button class="btn btn-sm btn-danger mr-1" type="submit" data-toggle="tooltip" data-placement="top" title="Cancel job."><i class="fas fa-ban"></i></button>
+            </form>
+            <a class="btn btn-sm btn-danger" href="/job/delete/${job._id}?flow_id=${flowId}" data-toggle="tooltip" data-placement="top" title="Delete job."><i class="fas fa-trash"></i></a>
+        `;
+    }
 
-                            // Populate data info
-                            const dataList = data.data.map(d => `<li>${d.name}</li>`).join('');
-                            detailsRow.find('.data-body').html(`<ul>${dataList}</ul>`);
+    function createDetailsTemplate() {
+        return `
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- Job Details -->
+                    <div class="col-md-6">
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <span class="badge badge-pill single-status float-right"></span>
+                                <h4 class="job-name"></h4>
+                            </div>
+                            <div class="card-body">
+                                <a class="job-flow-id" href="#"></a>
+                                <p class="card-text job-created-at"></p>
+                                <p class="card-text job-updated-at"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Service Info -->
+                    <div class="col-md-6">
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h4 class="service-name">Service</h4>
+                            </div>
+                            <div class="card-body service-body">
+                                <!-- Service info will be dynamically populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Template Info -->
+                    <div class="col-md-4">
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5>Template</h5>
+                            </div>
+                            <div class="card-body template-body">
+                                <!-- Template info will be dynamically populated -->
+                            </div>
+                        </div>    
+                    </div>
+                    <!-- Data Info -->
+                    <div class="col-md-4">
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5>Data</h5>
+                            </div>
+                            <div class="card-body data-body">
+                                <!-- Data info will be dynamically populated -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Dependencies Info -->
+                    <div class="col-md-4">
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5>Dependencies</h5>
+                            </div>
+                            <div class="card-body dependencies-body">
+                                <!-- Dependencies info will be dynamically populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
-                            // Populate dependencies info
-                            const dependenciesList = data.dependencies.map(d => `<li>${d.name}</li>`).join('');
-                            detailsRow.find('.dependencies-body').html(`<ul>${dependenciesList}</ul>`);
-                        }
-                    });
 
-                } else {
-                    detailsRow.addClass('d-none');
-                }
-            });
+    function toggleDetails(jobRow, detailsRow, job) {
+        jobRow.toggleClass('bg-active');
+        $('.job-row').not(jobRow).removeClass('bg-active');
+
+        if (detailsRow.hasClass('d-none')) {
+            detailsRow.removeClass('d-none');
+            fetchAndDisplayJobDetails(detailsRow, job);
+        } else {
+            detailsRow.addClass('d-none');
         }
-    )};
+    }
+
+    function fetchAndDisplayJobDetails(detailsRow, job) {
+        $.ajax({
+            url: `/project/api/job/${job._id}`,
+            method: 'GET',
+            success: data => populateJobDetails(detailsRow, data),
+            error: () => console.error('Error fetching job details')
+        });
+    }
+
+    function populateJobDetails(detailsRow, data) {
+        const detailsCard = detailsRow.find('.card');
+        detailsCard.find('.job-name').text(`Job: ${data.name}`);
+        detailsCard.find('.single-status').text(data.status).addClass(`badge-${data.status}`);
+        detailsCard.find('.job-flow-id').attr('href', `/flow/${data.flow_id}`).text(`Flow ID: ${data.flow_id}`);
+        detailsCard.find('.job-created-at').text(`Created At: ${data.created_at}`);
+        detailsCard.find('.job-updated-at').text(`Last Updated: ${data.updated_at}`);
+        
+        const serviceCard = detailsRow.find('.service-body');
+        serviceCard.html(`
+            <div class="row">
+                <div class="col-md-2 text-center">
+                    <i class="fa fa-${data.template.service.icon}" style="font-size: 48px;"></i>
+                    <small class="text-muted">${data.template.service.host}:${data.template.service.port}/${data.template.service.endpoint}</small>
+                </div>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex">
+                                <label class="mr-2">API:</label>
+                                <p class="mb-1">${data.template.service.api}</p>
+                            </div>
+                            <div class="d-flex">
+                                <label class="mr-2">Description:</label>
+                                <p class="mb-1">${data.template.service.description}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex">
+                                <label class="mr-2">Input Format:</label>
+                                <p class="mb-1">${data.template.service.input_format}</p>
+                            </div>
+                            <div class="d-flex">
+                                <label class="mr-2">Output Format:</label>
+                                <p class="mb-1">${data.template.service.output_format}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        detailsRow.find('.template-body').html(`<p>${data.template ? data.template.name : 'None'}</p>`);
+
+        const dataList = data.data.map(d => `<li>${d.name}</li>`).join('');
+        detailsRow.find('.data-body').html(`<ul>${dataList}</ul>`);
+
+        const dependenciesList = data.dependencies.map(d => `<li>${d.name}</li>`).join('');
+        detailsRow.find('.dependencies-body').html(`<ul>${dependenciesList}</ul>`);
+    }
+
