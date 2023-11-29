@@ -182,7 +182,7 @@ script.
         newTestItem.setAttribute('data-toggle', 'modal');
         newTestItem.setAttribute('data-target', '#testDetailsModal');
         newTestItem.setAttribute('data-id', data.testId);
-        newTestItem.textContent = `Test on ${data.created_at} | ${data.__v} | ${data.template_id}`;
+        newTestItem.textContent = `| Time: ${data.created_at} | Template Version: ${data.template_version} | Template ID: ${data.template_id}`;
         testHistoryList.prepend(newTestItem);
     }
 
@@ -190,13 +190,27 @@ script.
         if (event.target.classList.contains('test-history-item')) {
             const testId = event.target.dataset.id;
             fetchTestDetails(testId);
+            event.stopPropagation(); // Add this line to stop event propagation
         }
     }
 
     function fetchTestDetails(testId) {
-        const modalBody = document.getElementById('modalBody');
+        const responseDataContainer = document.getElementById('responseDataContainer'); // Get the response data container
+
         fetch(`/template/test/details/${testId}`)
             .then(response => response.json())
-            .then(data => modalBody.textContent = JSON.stringify(data, null, 2))
-            .catch(error => modalBody.textContent = `Error: ${error.message}`);
+            .then(data => {
+                if (data.success && data.data && data.data.result) {
+                    // Assuming 'result' is a field in the test object
+                    // Also assuming 'result' is already a JSON string
+                    responseDataContainer.textContent = JSON.stringify(JSON.parse(data.data.result), null, 2);
+                } else {
+                    responseDataContainer.textContent = 'No result data available';
+                }
+            })
+            .catch(error => {
+                    responseDataContainer.textContent = `Error: ${error.message}`;
+            });
     }
+
+

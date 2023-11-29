@@ -16,8 +16,6 @@ const TestController = {
 
             const blocks = template.inputs.map(input => input.block);
             const processedData = await processBlocks(blocks);
-            console.log('HERE')
-            console.log(processedData)
 
             const gptResponse = await axios.post(
                 'http://localhost:3001/gpt', { 
@@ -38,8 +36,27 @@ const TestController = {
 
             res.status(201).json({
                 success: true,
-                data: promptOutput
+                data: {
+                    testId: newTest._id, // or the appropriate identifier for the test
+                    created_at: newTest.createdAt || new Date().toISOString(), // Assuming your model has a createdAt field
+                    template_version: newTest.template_version,
+                    template_id: newTest.template_id,
+                    result: promptOutput // Including the result if needed on the frontend
+                }
             });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
+
+    testDetails: async (req, res) => {
+        try {
+            const testId = req.params.testId;
+            const test = await Test.findById(testId);
+            if (!test) {
+                return res.status(404).json({ success: false, message: "Test not found." });
+            }
+            res.status(200).json({ success: true, data: test });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
         }

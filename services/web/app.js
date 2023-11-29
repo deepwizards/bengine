@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const { URL } = require('url');
 const app = express();
-const port = 3002;
+const port = process.env.SERVICE_PORT || 3002;
 app.use(bodyParser.json());
 
 const {search} = require('./tools/search');

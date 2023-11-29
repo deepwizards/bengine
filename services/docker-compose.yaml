@@ -10,8 +10,6 @@ services:
       - openai
     networks:
       - app_network
-    # env_file:
-    #   - .env
 
   openai:
     build: ./openai
@@ -19,6 +17,9 @@ services:
       - "3001:3001"
     networks:
       - app_network
+    environment:
+      - SERVICE_PORT=3001
+      - OPENAI_API_KEY=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
     env_file:
       - .env
 
@@ -28,6 +29,8 @@ services:
       - "3002:3002"
     networks:
       - app_network
+    environment:
+      - SERVICE_PORT=3002
     env_file:
       - .env
 

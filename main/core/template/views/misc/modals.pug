@@ -71,7 +71,7 @@
                                     pre#requestData.code-editor-bg(style="max-height: 300px;")
                                         | {
                                         |     "messages": [{ "role": "system", "content": "#{preview}" }],
-                                        |     "model": "gpt-3.5-turbo"
+                                        |     "model": "gpt-3.5-turbo
                                         | }
 
                                 a(href="#" id="testServiceButton" data-id=`${template._id}`).btn.btn-success.btn-large
@@ -92,7 +92,7 @@
                                         ul.list-group#testHistoryList
                                             each test in tests
                                                 li.list-group-item.test-history-item(data-toggle="modal" data-target="#testDetailsModal" data-id=test._id)
-                                                    | Test on #{test.created_at} | #{test.__v} | #{test.template_id}
+                                                    | Time: #{test.created_at} | Template Version: #{test.template_version} | Template ID: #{test.template_id}
 
             .modal-footer
                 button.btn.btn-secondary(type="button" data-dismiss="modal")

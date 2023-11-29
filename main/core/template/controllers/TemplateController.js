@@ -55,6 +55,7 @@ const TemplateController = {
             const services = await Service.find();
             const blocks = await Block.find();
             const tests = await Test.find({ template_id: templateId });
+            console.log(tests)
             const groups = await Group.find({type: 'Template'})
             const allTemplates = await Template.find({});
             const currentTemplateId = req.params.id;

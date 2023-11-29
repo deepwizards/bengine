@@ -43,4 +43,8 @@ router.route('/edit/:templateId/block/:blockId/update')
 router.route('/test/:templateId')
     .get(validateObjectId, TestController.testTemplate);
 
+    // Routes for Test
+router.route('/test/details/:testId')
+.get(TestController.testDetails);
+
 module.exports = router;

@@ -25,7 +25,7 @@ block content
                 .mt-4
                     .row#projectCards
                         each item in items
-                            .col-md-4.col-lg-3.mb-4
+                            .col-md-6.col-lg-6.mb-4
                                 a(href='/project/' + item._id, data-group-id=item.groupId)
                                     .card    
                                         .card-header
@@ -34,30 +34,30 @@ block content
                                                     +status-badge(item.status)
                                         .card-body
                                             p.card-text= item.description
-                                            .row.text-center.fw
-                                                .col-md-12.mb-3
-                                                    .card.h-100
-                                                        .card-body.bg-primary.pt-5
-                                                            i.fa.fa-file-alt.fa-4x
-                                                            h5.card-title.fw.mt-5 Outputs: #{item.outputs.length}
-                                                .col-md-4.mb-3
-                                                    .card.h-100
-                                                        .card-body.pt-5
-                                                            i.fa.fa-sitemap.fa-4x
-                                                            h5.card-title.fw.mt-5 Flows: #{item.flows.length}
-                                                .col-md-4.mb-3
-                                                    .card.h-100
-                                                        .card-body.bg-success.pt-5
-                                                            i.fa.fa-check-circle.fa-4x
-                                                            p.card-title.fw.mt-5 Completed: #{item.flows.filter(flow => flow && flow.status === 'complete').length}
-                                                .col-md-4.mb-3
-                                                    .card.h-100
-                                                        .card-body.bg-info.pt-5
-                                                            i.fa.fa-hourglass-half.fa-4x
-                                                            p.card-title.fw.mt-5 Pending: #{item.flows.filter(flow => flow && flow.status !== 'complete').length}
-                                            a.btn.btn-info(href=`/project/${item._id}/outputs`)
-                                                i.fa.fa-external-link-alt
-                                                span.ml-2 View Outputs
+                                            //- .row.text-center.fw
+                                            //-     .col-md-12.mb-3
+                                            //-         .card.h-100
+                                            //-             .card-body.bg-primary.pt-5
+                                            //-                 i.fa.fa-file-alt.fa-4x
+                                            //-                 h5.card-title.fw.mt-5 Outputs: #{item.outputs.length}
+                                            //-     .col-md-4.mb-3
+                                            //-         .card.h-100
+                                            //-             .card-body.pt-5
+                                            //-                 i.fa.fa-sitemap.fa-4x
+                                            //-                 h5.card-title.fw.mt-5 Flows: #{item.flows.length}
+                                            //-     .col-md-4.mb-3
+                                            //-         .card.h-100
+                                            //-             .card-body.bg-success.pt-5
+                                            //-                 i.fa.fa-check-circle.fa-4x
+                                            //-                 p.card-title.fw.mt-5 Completed: #{item.flows.filter(flow => flow && flow.status === 'complete').length}
+                                            //-     .col-md-4.mb-3
+                                            //-         .card.h-100
+                                            //-             .card-body.bg-info.pt-5
+                                            //-                 i.fa.fa-hourglass-half.fa-4x
+                                            //-                 p.card-title.fw.mt-5 Pending: #{item.flows.filter(flow => flow && flow.status !== 'complete').length}
+                                            //- a.btn.btn-info(href=`/project/${item._id}/outputs`)
+                                            //-     i.fa.fa-external-link-alt
+                                            //-     span.ml-2 View Outputs
 
                                         .card-footer
                                             .btn-group(role='group').float-right
