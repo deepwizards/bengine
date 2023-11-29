@@ -19,7 +19,6 @@ services:
       - app_network
     environment:
       - SERVICE_PORT=3001
-      - OPENAI_API_KEY=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
     env_file:
       - .env
 
