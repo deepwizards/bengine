@@ -11,28 +11,6 @@ services:
     networks:
       - app_network
 
-  openai:
-    build: ./openai
-    ports:
-      - "3001:3001"
-    networks:
-      - app_network
-    environment:
-      - SERVICE_PORT=3001
-    env_file:
-      - .env
-
-  web:
-    build: ./web
-    ports:
-      - "3002:3002"
-    networks:
-      - app_network
-    environment:
-      - SERVICE_PORT=3002
-    env_file:
-      - .env
-
   redis:
     image: "redis:latest"
     ports:
