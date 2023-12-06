@@ -1,0 +1,1 @@
+Use bengine-cli to install extensions (bengine ext install <package_name>).  extensions will be downloaded and managed here as a central point of access.
