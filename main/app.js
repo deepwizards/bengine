@@ -125,6 +125,9 @@ async function init() {
 		app.get('/', (req, res) => {
 			res.render('admin/views/login');
 		});
+		app.get('/status', (req, res) => {
+			res.status(200).send('OK');
+		});
 		// TODO render nice 404 page
 		app.use((req, res, next) => {
 			res.status(404).send("Sorry can't find that!")
