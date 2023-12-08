@@ -7,25 +7,10 @@ services:
       target: webapp
     ports:
       - "1337:1337"
-    depends_on:
-      - mongodb
     restart: unless-stopped
 
   job_runner:
     build:
       context: .
       target: job_runner
-    depends_on:
-      - mongodb
     restart: unless-stopped
-
-  mongodb:
-    image: mongo:4.4
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-
-volumes:
-  mongodb_data:
-  

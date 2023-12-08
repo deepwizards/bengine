@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const { Schema } = mongoose;
 const User = new Schema({
 	username: { type: String, required: true, unique: true },
-	email: { type: String, required: true, unique: true },
+	email: { type: String, required: false, unique: true },
 	role: { type: String, enum: ['operator', 'admin'], required: true },
 	password: { type: String, required: true },
 	status: { type: String, enum: ['online', 'offline', 'away'], default: 'offline' },

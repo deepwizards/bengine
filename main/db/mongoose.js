@@ -16,7 +16,7 @@ if (!isDevMode) {
 }
 
 async function connectDB() {
-    const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/_bengine';
+    const connectionString = process.env.BENGINE_DB_URI || 'mongodb://localhost:27017/_bengine';
 
     try {
         await mongoose.connect(connectionString, options);
