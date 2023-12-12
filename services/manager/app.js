@@ -6,7 +6,7 @@ import { JobQueue } from "./includes/jobQueue.js";
 const app = express();
 app.use(express.json());
 
-const redisClient = new Redis('redis://redis:6379');
+const redisClient = new Redis('redis://bengine-redis:6379');
 
 redisClient.on("connect", () => {
     console.log("Connected to Redis");
