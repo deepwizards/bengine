@@ -1,22 +1,22 @@
 version: "3.9"
 
 services:
-  manager:
+  bengine-manager:
     build: ./manager
     ports:
       - "3000:3000"
     depends_on:
-      - redis
+      - bengine-redis
     networks:
-      - app_network
+      - bengine-services
 
-  redis:
+  bengine-redis:
     image: "redis:latest"
     ports:
       - "6379:6379"
     networks:
-      - app_network
+      - bengine-services
 
 networks:
-  app_network:
+  bengine-services:
 

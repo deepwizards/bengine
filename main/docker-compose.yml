@@ -1,16 +1,23 @@
 version: '3.8'
 
 services:
-  webapp:
+  bengine-app:
     build:
       context: .
-      target: webapp
+      target: bengine-app
     ports:
       - "1337:1337"
     restart: unless-stopped
+    networks: 
+      - bengine-main
 
-  job_runner:
+  bengine-job-runner:
     build:
       context: .
-      target: job_runner
+      target: bengine-job-runner
     restart: unless-stopped
+    networks: 
+      - bengine-main
+
+networks:
+  bengine-main:
