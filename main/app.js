@@ -83,7 +83,7 @@ async function init() {
 		}));
 		app.use(cookieParser());
 		app.use(session({
-				store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+				store: MongoStore.create({ mongoUrl: process.env.BENGINE_DB_URI }),
 				secret: process.env.SESSION_SECRET || 'whoooocareeeeessswhattttt',
 				resave: false,
 				saveUninitialized: true,
