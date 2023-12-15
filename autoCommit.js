@@ -69,6 +69,7 @@ async function generateCommitMessage() {
         });
 
         req.on('error', (error) => {
+            req.end();
             reject('Error in HTTP request: ' + error);
         });
 
