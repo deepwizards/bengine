@@ -14,7 +14,6 @@ const http = require('http');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const passport = require('passport');
 const isProduction = process.env.NODE_ENV === 'production';
 require('./db/mongoose');
@@ -95,8 +94,6 @@ async function init() {
 		// app.use(lusca.hsts({ maxAge: isProduction ? 31536000 : 0 })); 
 		// app.use(lusca.xssProtection(true));
 		const server = http.Server(app);
-		app.use(bodyParser.json({ limit: '1mb' }));
-		app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
 		app.disable('x-powered-by');
 		app.use(passport.initialize());
 		app.use(passport.session());

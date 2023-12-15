@@ -37,3 +37,4 @@ typings/
 
 .env
 main/ext-uploads/*
+.aider*

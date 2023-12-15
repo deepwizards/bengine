@@ -9,8 +9,6 @@ services:
       - bengine-redis
     networks:
       - bengine
-    environment:
-      - BENGINE_DB_URI=mongodb://bengine-mongodb:27017/bengine
 
   bengine-redis:
     image: "redis:latest"
