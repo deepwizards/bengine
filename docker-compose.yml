@@ -26,8 +26,6 @@ services:
     restart: unless-stopped
     depends_on:
       - mongodb
-    environment:
-      - MONGO_URI=mongodb://mongodb:27017/bengine
     networks: 
       - bengine
 
@@ -38,8 +36,6 @@ services:
     restart: unless-stopped
     depends_on:
       - mongodb
-    environment:
-      - MONGO_URI=mongodb://mongodb:27017/bengine
     networks: 
       - bengine
 
@@ -52,3 +48,6 @@ services:
 
 networks:
   bengine:
+
+environment:
+  - BENGINE_DB_URI=mongodb://mongodb:27017/bengine
