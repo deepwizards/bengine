@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  bengine-manager:
+    build: ./services/manager
+    ports:
+      - "3000:3000"
+    depends_on:
+      - bengine-redis
+    networks:
+      - bengine
+
+  bengine-redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    networks:
+      - bengine
+
+  bengine-app:
+    build:
+      context: ./main
+      target: bengine-app
+    ports:
+      - "1337:1337"
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/bengine
+    networks: 
+      - bengine
+
+  bengine-job-runner:
+    build:
+      context: ./main
+      target: bengine-job-runner
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/bengine
+    networks: 
+      - bengine
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - bengine
+
+networks:
+  bengine:
