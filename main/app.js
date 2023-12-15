@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const lusca = require('lusca');
 const session = require('express-session');
-const { MongoStore } = require('connect-mongo');
+const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const initializeSocket = require('./socket/queue.js');
 const http = require('http');
@@ -83,7 +83,7 @@ async function init() {
 		}));
 		app.use(cookieParser());
 		app.use(session({
-				store: new MongoStore({ client: mongoose.connection.getClient() }),
+				store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
 				secret: process.env.SESSION_SECRET || 'whoooocareeeeessswhattttt',
 				resave: false,
 				saveUninitialized: true,
