@@ -9,6 +9,8 @@ services:
       - bengine-redis
     networks:
       - bengine
+    environment:
+      - BENGINE_DB_URI=mongodb://bengine-mongodb:27017/bengine
 
   bengine-redis:
     image: "redis:latest"
@@ -25,9 +27,11 @@ services:
       - "1337:1337"
     restart: unless-stopped
     depends_on:
-      - mongodb
+      - bengine-mongodb
     networks: 
       - bengine
+    environment:
+      - BENGINE_DB_URI=mongodb://bengine-mongodb:27017/bengine
 
   bengine-job-runner:
     build:
@@ -35,11 +39,13 @@ services:
       target: bengine-job-runner
     restart: unless-stopped
     depends_on:
-      - mongodb
+      - bengine-mongodb
     networks: 
       - bengine
+    environment:
+      - BENGINE_DB_URI=mongodb://bengine-mongodb:27017/bengine
 
-  mongodb:
+  bengine-mongodb:
     image: mongo:latest
     ports:
       - "27017:27017"
@@ -48,6 +54,3 @@ services:
 
 networks:
   bengine:
-
-environment:
-  - BENGINE_DB_URI=mongodb://mongodb:27017/bengine
