@@ -13,7 +13,7 @@ async function getGitStatus() {
         });
         return changes;
     } catch (error) {
-        throw new Error('Error fetching Git status: ' + error.message);
+        throw new Error('Error fetching Git status: ' + error);
     }
 }
 
@@ -60,16 +60,16 @@ async function generateCommitMessage() {
                     if (response.choices && response.choices.length > 0 && response.choices[0].message) {
                         resolve(response.choices[0].message.content.trim());
                     } else {
-                        reject('Invalid response format: ' + data);
+                        reject('Invalid response format: ' + data + ', Error: ' + error);
                     }
                 } catch (error) {
-                    reject('Error parsing response data: ' + error.message);
+                    reject('Error parsing response data: ' + error);
                 }
             });
         });
 
         req.on('error', (error) => {
-            reject('Error in HTTP request: ' + error.message);
+            reject('Error in HTTP request: ' + error);
         });
 
         req.write(postData);
@@ -89,7 +89,7 @@ async function commitAndPush() {
             console.log(commitMessage);
         }
     } catch (error) {
-        console.error('An error occurred:', error.message);
+        console.error('An error occurred:', error);
     }
 }
 
