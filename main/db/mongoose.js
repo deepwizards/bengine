@@ -1,22 +1,20 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const isDevMode = process.env.NODE_ENV === 'development';
+const isProduction = process.env.NODE_ENV === 'production';
 
 const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000,
     retryWrites: true,
 };
 
-if (!isDevMode) {
+if (isProduction) {
     options.user = process.env.DB_USERNAME;
     options.pass = process.env.DB_PASSWORD;
     options.replicaSet = process.env.DB_REPLICA_SET;
 }
 
 async function connectDB() {
-    const connectionString = process.env.BENGINE_DB_URI || 'mongodb://localhost:27017/_bengine';
+    const connectionString = process.env.BENGINE_DB_URI || 'mongodb://localhost:27017/bengine';
 
     try {
         await mongoose.connect(connectionString, options);

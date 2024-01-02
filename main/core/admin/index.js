@@ -16,37 +16,37 @@ router.get('/logout', function(req, res, next) {
 	});
 });
 
-router.get('/', authMiddleware.isLoggedIn, authMiddleware.isAdmin, (req, res) => {
-	User.find({}, (err, users) => {
-		if (err) {
-			res.status(500).send(err);
-		} else {
-			res.render('user/views/manager', { users });
-		}
-	});
+router.get('/', authMiddleware.isLoggedIn, authMiddleware.hasRole('admin'), (req, res) => {
+    User.find({}).populate('roles').exec((err, users) => {
+        if (err) {
+            res.status(500).send('Internal Server Error');
+        } else {
+            res.render('user/views/manager', { users });
+        }
+    });
 });
 
-router.post('/new', authMiddleware.isLoggedIn, authMiddleware.isAdmin, (req, res) => {
-	const { username, password, role } = req.body;
-	const newUser = new User({ username, password, role });
+router.post('/new', authMiddleware.isLoggedIn, authMiddleware.hasRole('admin'), (req, res) => {
+    const { username, password, role } = req.body;
+    const newUser = new User({ username, password, roles: [role] });
 
-	newUser.save((err) => {
-		if (err) {
-			res.status(500).send(err);
-		} else {
-			res.redirect('/user');
-		}
-	});
+    newUser.save((err) => {
+        if (err) {
+            res.status(500).send('Error creating user');
+        } else {
+            res.redirect('/user');
+        }
+    });
 });
-	
-router.post('/delete/:userId', authMiddleware.isLoggedIn, authMiddleware.isAdmin, (req, res) => {
-	User.findByIdAndDelete(req.params.userId, (err) => {
-		if (err) {
-			res.status(500).send(err);
-		} else {
-			res.redirect('/user');
-		}
-	});
+
+router.post('/delete/:userId', authMiddleware.isLoggedIn, authMiddleware.hasRole('admin'), (req, res) => {
+    User.findByIdAndDelete(req.params.userId, (err) => {
+        if (err) {
+            res.status(500).send('Error deleting user');
+        } else {
+            res.redirect('/user');
+        }
+    });
 });
 
 module.exports = router;

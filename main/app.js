@@ -73,7 +73,7 @@ async function setupMiddleware(app, coreModules, extensionModules) {
 async function init() {
 	try {
 		const app = express();
-		// app.use(helmet());
+		// app.use(helmet()); // enable for security
 		app.use(morgan(isProduction ? 'combined' : 'combined')); 
 		app.use(compression()); 
 		app.use(cors({
@@ -83,13 +83,22 @@ async function init() {
 		}));
 		app.use(cookieParser());
 		app.use(session({
-				store: MongoStore.create({ mongoUrl: process.env.BENGINE_DB_URI }),
-				secret: process.env.SESSION_SECRET || 'whoooocareeeeessswhattttt',
-				resave: false,
-				saveUninitialized: true,
-				cookie: { secure: isProduction, httpOnly: true, maxAge: 3600000 } 
+			store: MongoStore.create({
+				mongoUrl: process.env.BENGINE_DB_URI || 'mongodb://localhost:27017/bengine',
+				mongoOptions: {},
+				ttl: 14 * 24 * 60 * 60, // 14 days session expiry
+				autoRemove: 'native',
+			}),
+			secret: process.env.SESSION_SECRET || 'whoooocareeeeessswhattttt',
+			resave: false,
+			saveUninitialized: true,
+			cookie: { 
+				secure: isProduction, 
+				httpOnly: true, 
+				maxAge: 3600000 // 1 hour
+			}
 		}));
-		// app.use(lusca.csrf()); 
+		// app.use(lusca.csrf());   // enable for security
 		// app.use(lusca.xframe('SAMEORIGIN'));
 		// app.use(lusca.hsts({ maxAge: isProduction ? 31536000 : 0 })); 
 		// app.use(lusca.xssProtection(true));
@@ -110,13 +119,13 @@ async function init() {
 		await setupMiddleware(app, coreModules, extensionModules);
 		initializeSocket(server);
 		app.use('/static', express.static('public'));
-		app.use('/static', express.static(__dirname + '/node_modules/socket.io/client-dist'));
-		app.use('/static', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/'));
-		app.use('/static', express.static(__dirname + '/node_modules/jquery/dist'));
-		app.use('/static', express.static(__dirname + '/node_modules/popper.js/dist'));
-		app.use('/static', express.static(__dirname + '/node_modules/bootstrap/dist'));
-		app.use('/static', express.static(__dirname + '/node_modules/datatables.net/js'));
-		app.use('/static', express.static(__dirname + '/node_modules/chart.js/dist'));
+		// app.use('/static', express.static(__dirname + '/node_modules/socket.io/client-dist'));
+		// app.use('/static', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/'));
+		// app.use('/static', express.static(__dirname + '/node_modules/jquery/dist'));
+		// app.use('/static', express.static(__dirname + '/node_modules/popper.js/dist'));
+		// app.use('/static', express.static(__dirname + '/node_modules/bootstrap/dist'));
+		// app.use('/static', express.static(__dirname + '/node_modules/datatables.net/js'));
+		// app.use('/static', express.static(__dirname + '/node_modules/chart.js/dist'));
 		app.set('views', [ path.join(__dirname, 'core'), path.join(__dirname, 'modules') ]);
 		app.set('view engine', 'pug');
 		app.get('/', (req, res) => {

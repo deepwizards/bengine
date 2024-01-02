@@ -42,9 +42,11 @@ const JobController = {
             const flow = await Flow.findById(flow_id);
             if (!flow) return res.status(404).send('Flow not found.');
 
-            const { data, dependencies, template_id, project_id } = req.body;
-            if (!template_id) return res.status(400).send('Template ID is required.');
+            const { template_id, project_id } = req.body;
+            const data = req.body.data || [];
+            const dependencies = req.body.dependencies || [];
 
+            if (!template_id) return res.status(400).send('Template ID is required.');
             const template = await Template.findById(template_id);
             if (!template) return res.status(404).send('Template not found.');
 

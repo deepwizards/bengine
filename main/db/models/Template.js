@@ -18,6 +18,7 @@ const Template = new Schema({
     name: String,
     description: String,
     notes: String,
+    type: String,
     inputs: [{
         block: {
             type: Schema.Types.ObjectId,
