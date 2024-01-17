@@ -7,24 +7,30 @@ nav#sidebar.sidebar-wrapper
 				i.fas.fa-bars.fw
 		.sidebar-menu(style='margin-top: 65px;')
 			ul
-				li(class=(title === 'dashboard') ? 'bg-info active' : undefined)
+				li(class=(title === 'dashboard') ? 'bg-info active': undefined)
 					a(href='/dashboard')
 						span &nbsp;Dashboard
-				li(class=(title === 'queue') ? 'bg-info active' : undefined)
+				li(class=(title === 'queue') ? 'bg-info active': undefined)
 					a(href='/queue')
 						span &nbsp;Activity Monitor
-				li(class=(title === 'project') ? 'bg-info active' : undefined)
+				li(class=(title === 'project') ? 'bg-info active': undefined)
 					a(href='/project')
 						span &nbsp;Project Manager
-				li(class=(title === 'data') ? 'bg-info active' : undefined)
+				li(class=(title === 'data') ? 'bg-info active': undefined)
 					a(href='/group') Data Manager
-				li(class=(title === 'template') ? 'bg-info active' : undefined)
+				li(class=(title === 'template') ? 'bg-info active': undefined)
 					a(href='/template') Template Editor
+				li(class=(title === 'template') ? 'bg-info active': undefined)
+					a(href='/job') Job
+				li(class=(title === 'template') ? 'bg-info active': undefined)
+					a(href='/block') Block
+				li(class=(title === 'template') ? 'bg-info active': undefined)
+					a(href='/module') Module
 				
 				- const excludedModules = ['admin', 'settings', 'flow', 'output', 'job', 'project', 'data', 'prompt', 'queue', 'dashboard', 'install', 'module'];
 				each module in modules
 					if !excludedModules.includes(module)
-						li(class=(title === module.name) ? 'bg-info active' : 'bg-dark')
+						li(class=(title === module.name) ? 'bg-info active': 'bg-dark')
 							a(href=`/${module.name}`)
 								span=module.name.toUpperCase()
 		.sidebar-footer.pt-4
