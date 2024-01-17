@@ -16,15 +16,15 @@ nav#sidebar.sidebar-wrapper
 				li(class=(title === 'project') ? 'bg-info active': undefined)
 					a(href='/project')
 						span &nbsp;Project Manager
-				li(class=(title === 'data') ? 'bg-info active': undefined)
+				li(class=(title === 'group') ? 'bg-info active': undefined)
 					a(href='/group') Data Manager
 				li(class=(title === 'template') ? 'bg-info active': undefined)
 					a(href='/template') Template Editor
-				li(class=(title === 'template') ? 'bg-info active': undefined)
+				li(class=(title === 'job') ? 'bg-info active': undefined)
 					a(href='/job') Job
-				li(class=(title === 'template') ? 'bg-info active': undefined)
+				li(class=(title === 'block') ? 'bg-info active': undefined)
 					a(href='/block') Block
-				li(class=(title === 'template') ? 'bg-info active': undefined)
+				li(class=(title === 'module') ? 'bg-info active': undefined)
 					a(href='/module') Module
 				
 				- const excludedModules = ['admin', 'settings', 'flow', 'output', 'job', 'project', 'data', 'prompt', 'queue', 'dashboard', 'install', 'module'];

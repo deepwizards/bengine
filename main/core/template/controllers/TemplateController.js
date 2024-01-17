@@ -10,7 +10,7 @@ const TemplateController = {
             const templates = await Template.find().populate('type');
             res.render('template/views/index', { 
                 templates,
-                title: 'Template List' 
+                title: 'template'
             });
         } catch (err) {
             console.error(err);
