@@ -57,6 +57,21 @@ Integrated Process Automation Management System 🤖
 
 ## Usage 🛠️
 
+### MongoDb connection 🟢
+1. Ensure MongoDB is running.
+
+2. `xcode-select --install`
+
+3. `brew tap mongodb/brew`
+
+2. `brew update`
+
+3. `brew install mongodb-community@7.0`
+
+4. `brew services start mongodb-community@7.0`
+
+5. `mongosh`
+
 ### Docker Compose 🐳
 
 1. Build the Docker image:
