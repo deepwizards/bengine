@@ -66,9 +66,9 @@ block content
                                 .tab-pane(id=`tab${index}`, class=(model.name=='Data'?'active':''))
                                     ul.list-group.list-group-flush
                                         each item in model.items
-                                            li.list-group-item.bg-dark.text-white.py-1
+                                            li(style="display: flex;").list-group-item.bg-dark.text-white.py-1
                                                 input(type='checkbox', id=`item${item._id}`)
-                                                label.ml-2(for=`item${item._id}`)
+                                                label.mb-0.ml-2(for=`item${item._id}`)
                                                     i.fas.fa-file
                                                     span(style="font-family: monospace; text-transform: capitalize;").ml-2 #{item.name}
 
