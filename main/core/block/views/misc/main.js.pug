@@ -11,7 +11,7 @@ script.
 			const $tagElement = $(`.filter-tag[data-tag="${tag}"]`);
 			$tagElement.toggleClass('badge-dark badge-primary');
 
-			if ($tagElement.hasClass('badge-primary')) {
+			if ($tagElement.hasClass('badge-dark')) {
 				filterTableByTag(tag);
 			} else {
 				filterTableByTag(tag, false);
